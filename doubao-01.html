@@ -48,6 +48,213 @@
             }
         }
     </style>
+    <style>
+        :root {
+            --ppt-transition-duration: 0.6s;
+        }
+
+        body.ppt-mode {
+            overflow: hidden;
+            background-color: #f4f6fb;
+        }
+
+        .ppt-presentation {
+            position: relative;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f4f6fb 0%, #ffffff 45%);
+        }
+
+        .ppt-slides {
+            position: relative;
+            width: 100%;
+            transition: height 0.45s ease;
+            padding-top: 1.5rem;
+            padding-bottom: 2rem;
+        }
+
+        .ppt-slide {
+            position: absolute;
+            inset: 0;
+            display: none;
+            opacity: 0;
+            transform: translateX(80px);
+            overflow-y: auto;
+            padding-bottom: 6rem;
+            height: calc(100vh - 11rem);
+            min-height: calc(100vh - 11rem);
+            max-height: calc(100vh - 11rem);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(22, 93, 255, 0.2) transparent;
+        }
+
+        .ppt-slide::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .ppt-slide::-webkit-scrollbar-thumb {
+            background: rgba(22, 93, 255, 0.25);
+            border-radius: 999px;
+        }
+
+        .ppt-slide.is-active {
+            display: block;
+            position: relative;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .ppt-slide.enter-from-right {
+            animation: pptSlideInFromRight var(--ppt-transition-duration) ease forwards;
+        }
+
+        .ppt-slide.enter-from-left {
+            animation: pptSlideInFromLeft var(--ppt-transition-duration) ease forwards;
+        }
+
+        .ppt-slide.leave-to-left {
+            animation: pptSlideOutToLeft var(--ppt-transition-duration) ease forwards;
+        }
+
+        .ppt-slide.leave-to-right {
+            animation: pptSlideOutToRight var(--ppt-transition-duration) ease forwards;
+        }
+
+        @keyframes pptSlideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pptSlideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-80px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pptSlideOutToLeft {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-80px);
+            }
+        }
+
+        @keyframes pptSlideOutToRight {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(80px);
+            }
+        }
+
+        .ppt-control-panel {
+            pointer-events: none;
+        }
+
+        .ppt-control-panel .pointer-events-auto {
+            pointer-events: auto;
+        }
+
+        .ppt-nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            background: linear-gradient(135deg, #165DFF 0%, #36CFFB 100%);
+            box-shadow: 0 12px 24px rgba(22, 93, 255, 0.25);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+
+        .ppt-nav-btn:hover:not(:disabled) {
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 18px 30px rgba(22, 93, 255, 0.28);
+        }
+
+        .ppt-nav-btn:disabled {
+            background: rgba(134, 144, 156, 0.18);
+            color: #86909c;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ppt-dot {
+            border: 1px solid rgba(22, 93, 255, 0.3);
+            background: rgba(255, 255, 255, 0.92);
+            color: #4b5563;
+            min-width: 1.9rem;
+            height: 1.9rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .ppt-dot:hover {
+            border-color: #165DFF;
+            color: #165DFF;
+        }
+
+        .ppt-dot.is-active {
+            background: linear-gradient(135deg, #165DFF 0%, #36CFFB 100%);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 12px 24px rgba(22, 93, 255, 0.25);
+        }
+
+        .ppt-back-to-start {
+            box-shadow: 0 16px 30px rgba(22, 93, 255, 0.22);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .ppt-back-to-start:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .ppt-slide {
+                padding-bottom: 7.5rem;
+                height: calc(100vh - 9.5rem);
+                min-height: calc(100vh - 9.5rem);
+                max-height: calc(100vh - 9.5rem);
+            }
+
+            .ppt-nav-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .ppt-dot {
+                min-width: 1.75rem;
+                height: 1.75rem;
+                font-size: 0.7rem;
+            }
+        }
+    </style>
 </head>
 <body class="bg-light font-sans text-dark">
     <!-- 顶部导航栏 -->
@@ -100,26 +307,28 @@
         </div>
     </header>
 
-    <!-- 英雄区域 -->
-    <section class="bg-gradient-tech text-white py-16 md:py-24">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-3xl mx-auto text-center">
-                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-shadow">AI技术核心解析报告</h1>
-                <p class="text-lg md:text-xl opacity-90 mb-8">为体制内高层领导和技术团队提供全面、深入的AI技术解读</p>
-                <div class="flex flex-wrap justify-center gap-4">
-                    <a href="#overview" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-lg">
-                        开始阅读 <i class="fa fa-arrow-down ml-2"></i>
-                    </a>
-                    <a href="#table-of-contents" class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:bg-opacity-10 transition-all">
-                        查看目录 <i class="fa fa-list-ul ml-2"></i>
-                    </a>
+    <main id="presentation" class="ppt-presentation">
+        <div id="slidesWrapper" class="ppt-slides">
+            <!-- 英雄区域 -->
+            <section class="ppt-slide bg-gradient-tech text-white py-16 md:py-24">
+                <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="max-w-3xl mx-auto text-center">
+                        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-shadow">AI技术核心解析报告</h1>
+                        <p class="text-lg md:text-xl opacity-90 mb-8">为体制内高层领导和技术团队提供全面、深入的AI技术解读</p>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            <a href="#overview" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-lg">
+                                开始阅读 <i class="fa fa-arrow-down ml-2"></i>
+                            </a>
+                            <a href="#table-of-contents" class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:bg-opacity-10 transition-all">
+                                查看目录 <i class="fa fa-list-ul ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <!-- 目录部分 -->
-    <section id="table-of-contents" class="py-12 bg-white">
+            <!-- 目录部分 -->
+            <section id="table-of-contents" class="ppt-slide py-12 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto">
                 <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">报告目录</h2>
@@ -249,10 +458,9 @@
         </div>
     </section>
 
-    <!-- 主要内容区域 -->
-    <main class="py-12">
+            <!-- 主要内容区域 -->
         <!-- 项目概况部分 -->
-        <section id="overview" class="py-12 bg-white">
+        <section id="overview" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -316,7 +524,7 @@
         </section>
 
         <!-- 算力基础设施部分 -->
-        <section id="infrastructure" class="py-12 bg-light">
+        <section id="infrastructure" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -399,7 +607,7 @@
         </section>
 
         <!-- 英伟达算力卡龙头地位分析 -->
-        <section id="nvidia" class="py-12 bg-white">
+        <section id="nvidia" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -659,7 +867,7 @@
         </section>
 
         <!-- 算力卡底层逻辑详解 -->
-        <section id="gpu" class="py-12 bg-light">
+        <section id="gpu" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -992,7 +1200,7 @@
         </section>
 
         <!-- 大模型自注意力学习机制 -->
-        <section id="attention" class="py-12 bg-white">
+        <section id="attention" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1349,7 +1557,7 @@
         </section>
 
         <!-- 机器学习底层逻辑基础 -->
-        <section id="ml" class="py-12 bg-light">
+        <section id="ml" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1460,7 +1668,7 @@
         </section>
 
         <!-- 大模型部署技术体系 -->
-        <section id="deployment" class="py-12 bg-white">
+        <section id="deployment" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1591,7 +1799,7 @@
         </section>
 
         <!-- 大模型训练技术体系 -->
-        <section id="training" class="py-12 bg-light">
+        <section id="training" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1677,7 +1885,7 @@
         </section>
 
         <!-- 知识蒸馏技术详解 -->
-        <section id="distillation" class="py-12 bg-white">
+        <section id="distillation" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1753,7 +1961,7 @@
         </section>
 
         <!-- 知识库技术体系 -->
-        <section id="knowledge" class="py-12 bg-light">
+        <section id="knowledge" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1849,7 +2057,7 @@
         </section>
 
         <!-- 智能体开发技术 -->
-        <section id="agents" class="py-12 bg-white">
+        <section id="agents" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -1961,7 +2169,7 @@
         </section>
 
         <!-- 体制内AI应用案例 -->
-        <section id="cases" class="py-12 bg-light">
+        <section id="cases" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -2016,7 +2224,7 @@
         </section>
 
         <!-- 战略建议与行动计划 -->
-        <section id="strategy" class="py-12 bg-white">
+        <section id="strategy" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -2090,7 +2298,7 @@
         </section>
 
         <!-- 总结与展望 -->
-        <section id="conclusion" class="py-12 bg-light">
+        <section id="conclusion" class="ppt-slide py-12 bg-light">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -2109,7 +2317,7 @@
         </section>
 
         <!-- 核心术语表 -->
-        <section id="glossary" class="py-12 bg-white">
+        <section id="glossary" class="ppt-slide py-12 bg-white">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-4xl mx-auto">
                     <div class="flex items-center mb-8">
@@ -2164,329 +2372,474 @@
             </div>
         </section>
 
-        <!-- 回到顶部按钮 -->
-        <button id="backToTop" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
-            <i class="fa fa-arrow-up"></i>
-        </button>
-    </main>
-
-    <!-- 页脚 -->
-    <footer class="bg-dark text-white py-12">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-                    <div class="flex items-center mb-4 md:mb-0">
-                        <i class="fa fa-microchip text-primary text-2xl mr-2"></i>
-                        <h2 class="text-xl font-bold">AI技术核心解析报告</h2>
-                    </div>
-                    <div class="flex space-x-4">
-                        <a href="#" class="text-white hover:text-primary transition-colors">
-                            <i class="fa fa-file-pdf-o text-xl"></i>
-                        </a>
-                        <a href="#" class="text-white hover:text-primary transition-colors">
-                            <i class="fa fa-share-alt text-xl"></i>
-                        </a>
-                        <a href="#" class="text-white hover:text-primary transition-colors">
-                            <i class="fa fa-print text-xl"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="border-t border-gray-700 pt-8">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-4">关于报告</h3>
-                            <p class="text-gray-400 text-sm">本报告旨在为体制内高层领导和技术团队提供一份全面、深入的AI技术解读，帮助受众全面理解AI技术的原理、价值和应用前景。</p>
+        <!-- 结束页 -->
+        <section id="closing" class="ppt-slide bg-dark text-white py-12">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                        <div class="flex items-center mb-4 md:mb-0">
+                            <i class="fa fa-microchip text-primary text-2xl mr-2"></i>
+                            <h2 class="text-xl font-bold">AI技术核心解析报告</h2>
                         </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-4">快速导航</h3>
-                            <ul class="space-y-2 text-gray-400 text-sm">
-                                <li><a href="#overview" class="hover:text-primary transition-colors">项目概况</a></li>
-                                <li><a href="#infrastructure" class="hover:text-primary transition-colors">算力基础</a></li>
-                                <li><a href="#nvidia" class="hover:text-primary transition-colors">英伟达分析</a></li>
-                                <li><a href="#gpu" class="hover:text-primary transition-colors">算力卡逻辑</a></li>
-                                <li><a href="#attention" class="hover:text-primary transition-colors">注意力机制</a></li>
-                                <li><a href="#ml" class="hover:text-primary transition-colors">机器学习</a></li>
-                                <li><a href="#deployment" class="hover:text-primary transition-colors">部署体系</a></li>
-                                <li><a href="#knowledge" class="hover:text-primary transition-colors">知识与智能体</a></li>
-                                <li><a href="#strategy" class="hover:text-primary transition-colors">战略计划</a></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold mb-4">联系我们</h3>
-                            <ul class="space-y-2 text-gray-400 text-sm">
-                                <li class="flex items-start">
-                                    <i class="fa fa-envelope-o mr-2 mt-1"></i>
-                                    <span>contact@aitechreport.com</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fa fa-phone mr-2 mt-1"></i>
-                                    <span>400-123-4567</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fa fa-map-marker mr-2 mt-1"></i>
-                                    <span>北京市海淀区中关村科技园区</span>
-                                </li>
-                            </ul>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-white hover:text-primary transition-colors">
+                                <i class="fa fa-file-pdf-o text-xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-primary transition-colors">
+                                <i class="fa fa-share-alt text-xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-primary transition-colors">
+                                <i class="fa fa-print text-xl"></i>
+                            </a>
                         </div>
                     </div>
                     
-                    <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-                        <p>© 2025 AI技术研究中心. 保留所有权利.</p>
+                    <div class="border-t border-gray-700 pt-8">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">关于报告</h3>
+                                <p class="text-gray-400 text-sm">本报告旨在为体制内高层领导和技术团队提供一份全面、深入的AI技术解读，帮助受众全面理解AI技术的原理、价值和应用前景。</p>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">快速导航</h3>
+                                <ul class="space-y-2 text-gray-400 text-sm">
+                                    <li><a href="#overview" class="hover:text-primary transition-colors">项目概况</a></li>
+                                    <li><a href="#infrastructure" class="hover:text-primary transition-colors">算力基础</a></li>
+                                    <li><a href="#nvidia" class="hover:text-primary transition-colors">英伟达分析</a></li>
+                                    <li><a href="#gpu" class="hover:text-primary transition-colors">算力卡逻辑</a></li>
+                                    <li><a href="#attention" class="hover:text-primary transition-colors">注意力机制</a></li>
+                                    <li><a href="#ml" class="hover:text-primary transition-colors">机器学习</a></li>
+                                    <li><a href="#deployment" class="hover:text-primary transition-colors">部署体系</a></li>
+                                    <li><a href="#knowledge" class="hover:text-primary transition-colors">知识与智能体</a></li>
+                                    <li><a href="#strategy" class="hover:text-primary transition-colors">战略计划</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+                                <ul class="space-y-2 text-gray-400 text-sm">
+                                    <li class="flex items-start">
+                                        <i class="fa fa-envelope-o mr-2 mt-1"></i>
+                                        <span>contact@aitechreport.com</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-phone mr-2 mt-1"></i>
+                                        <span>400-123-4567</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fa fa-map-marker mr-2 mt-1"></i>
+                                        <span>北京市海淀区中关村科技园区</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                            <p>© 2025 AI技术研究中心. 保留所有权利.</p>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
+    </div>
+
+    <div class="ppt-control-panel pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center px-4">
+        <div class="pointer-events-auto bg-white/95 backdrop-blur-lg border border-white/40 shadow-2xl rounded-2xl w-full max-w-4xl px-6 py-4 flex flex-col md:flex-row items-center gap-4">
+            <div class="flex items-center gap-3">
+                <button id="prevSlide" class="ppt-nav-btn" aria-label="上一页">
+                    <i class="fa fa-chevron-left"></i>
+                </button>
+                <button id="nextSlide" class="ppt-nav-btn" aria-label="下一页">
+                    <i class="fa fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="flex-1 w-full md:w-auto flex flex-col items-center gap-2">
+                <div id="slideCounter" class="text-sm font-semibold text-neutral-600">1 / 1</div>
+                <div class="h-1.5 w-full md:w-56 bg-light rounded-full overflow-hidden">
+                    <div id="slideProgressFill" class="h-full w-0 bg-primary transition-all duration-500 ease-out"></div>
+                </div>
+                <div class="flex flex-wrap justify-center gap-2" id="slideDots"></div>
+            </div>
+            <div class="hidden md:flex items-center text-xs font-medium text-neutral-500 gap-2">
+                <i class="fa fa-keyboard-o text-base"></i>
+                <span>使用 ← → 快速切换</span>
+            </div>
         </div>
-    </footer>
+    </div>
+
+    <button id="backToTop" class="ppt-back-to-start fixed bottom-32 right-6 md:right-12 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-xl transition-all duration-300 opacity-0 pointer-events-none" aria-label="回到封面">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+</main>
 
     <!-- JavaScript -->
     <script>
-        // 移动端菜单切换
-        document.getElementById('menuBtn').addEventListener('click', function() {
-            const mobileMenu = document.getElementById('mobileMenu');
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // 平滑滚动
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                // 关闭移动端菜单
-                document.getElementById('mobileMenu').classList.add('hidden');
-                
-                const targetId = this.getAttribute('href');
-                const targetElement = document.querySelector(targetId);
-                
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // 回到顶部按钮
-        const backToTopBtn = document.getElementById('backToTop');
-        
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.remove('opacity-0', 'invisible');
-                backToTopBtn.classList.add('opacity-100', 'visible');
-            } else {
-                backToTopBtn.classList.remove('opacity-100', 'visible');
-                backToTopBtn.classList.add('opacity-0', 'invisible');
-            }
-            
-            // 导航栏滚动效果
-            const header = document.querySelector('header');
-            if (window.pageYOffset > 100) {
-                header.classList.add('shadow-lg');
-                header.classList.remove('shadow-md');
-            } else {
-                header.classList.remove('shadow-lg');
-                header.classList.add('shadow-md');
-            }
-        });
-        
-        backToTopBtn.addEventListener('click', function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
-        
-        // 图表初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 全球AI芯片市场份额图表
-            const globalAiChipCtx = document.getElementById('globalAiChipChart').getContext('2d');
-            new Chart(globalAiChipCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['英伟达', 'AMD', '英特尔', '其他'],
-                    datasets: [{
-                        data: [95, 2, 2, 1],
-                        backgroundColor: [
-                            '#165DFF',
-                            '#36CFFB',
-                            '#722ED1',
-                            '#86909C'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
-                                }
-                            }
-                        }
+            const body = document.body;
+            body.classList.add('ppt-mode');
+
+            const menuBtn = document.getElementById('menuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (menuBtn && mobileMenu) {
+                menuBtn.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            const slidesWrapper = document.getElementById('slidesWrapper');
+            const slideElements = slidesWrapper ? Array.from(slidesWrapper.children).filter(element => element.matches('section, footer')) : [];
+
+            if (!slidesWrapper || slideElements.length === 0) {
+                return;
+            }
+
+            const prevButton = document.getElementById('prevSlide');
+            const nextButton = document.getElementById('nextSlide');
+            const counterEl = document.getElementById('slideCounter');
+            const dotsContainer = document.getElementById('slideDots');
+            const progressFill = document.getElementById('slideProgressFill');
+            const backToTopBtn = document.getElementById('backToTop');
+
+            const slideIndexById = {};
+            const dots = [];
+            let currentIndex = 0;
+            let isTransitioning = false;
+
+            const canCreateCharts = typeof Chart !== 'undefined';
+            const chartInstances = {};
+            const chartInitializers = canCreateCharts ? {
+                globalAiChipChart: (ctx) => new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['英伟达', 'AMD', '英特尔', '其他'],
+                        datasets: [{
+                            data: [95, 2, 2, 1],
+                            backgroundColor: ['#165DFF', '#36CFFB', '#722ED1', '#86909C'],
+                            borderWidth: 0
+                        }]
                     },
-                    cutout: '60%'
-                }
-            });
-            
-            // 中国AI芯片市场份额图表
-            const chinaAiChipCtx = document.getElementById('chinaAiChipChart').getContext('2d');
-            new Chart(chinaAiChipCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['英伟达', '华为', '海光信息', '寒武纪', '其他'],
-                    datasets: [{
-                        data: [83.2, 14.6, 1.4, 0.8, 0],
-                        backgroundColor: [
-                            '#165DFF',
-                            '#36CFFB',
-                            '#722ED1',
-                            '#F7BA1E',
-                            '#86909C'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                font: {
-                                    size: 12
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    font: { size: 12 }
                                 }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
                                 }
-                            }
-                        }
-                    },
-                    cutout: '60%'
-                }
-            });
-            
-            // 英伟达市值增长图表
-            const nvidiaMarketCapCtx = document.getElementById('nvidiaMarketCapChart').getContext('2d');
-            new Chart(nvidiaMarketCapCtx, {
-                type: 'line',
-                data: {
-                    labels: ['1999', '2006', '2012', '2018', '2022', '2024'],
-                    datasets: [{
-                        label: '市值 (十亿美元)',
-                        data: [2, 15, 100, 150, 1000, 3000],
-                        borderColor: '#165DFF',
-                        backgroundColor: 'rgba(22, 93, 255, 0.1)',
-                        fill: true,
-                        tension: 0.3,
-                        pointBackgroundColor: '#165DFF',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `市值: ${context.raw}十亿美元`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: '市值 (十亿美元)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: '年份'
                             }
                         }
                     }
-                }
-            });
-            
-            // CPU与GPU芯片面积分配对比图表
-            const cpuGpuAreaCtx = document.getElementById('cpuGpuAreaChart').getContext('2d');
-            new Chart(cpuGpuAreaCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['计算单元 (ALU)', '缓存', '控制单元', '其他'],
-                    datasets: [
-                        {
-                            label: 'CPU',
-                            data: [20, 35, 30, 15],
-                            backgroundColor: '#36CFFB',
-                        },
-                        {
-                            label: 'GPU',
-                            data: [80, 10, 5, 5],
-                            backgroundColor: '#165DFF',
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.raw}%`;
+                }),
+                chinaAiChipChart: (ctx) => new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['英伟达', '华为', '海光信息', '寒武纪', '其他'],
+                        datasets: [{
+                            data: [83.2, 14.6, 1.4, 0.8, 0],
+                            backgroundColor: ['#165DFF', '#36CFFB', '#722ED1', '#F7BA1E', '#86909C'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '60%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw}%`;
+                                    }
                                 }
                             }
                         }
+                    }
+                }),
+                nvidiaMarketCapChart: (ctx) => new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1999', '2006', '2012', '2018', '2022', '2024'],
+                        datasets: [{
+                            label: '市值 (十亿美元)',
+                            data: [2, 15, 100, 150, 1000, 3000],
+                            borderColor: '#165DFF',
+                            backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#165DFF',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: '芯片面积占比 (%)'
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `市值: ${context.raw}十亿美元`;
+                                    }
+                                }
                             }
                         },
-                        x: {
-                            title: {
-                                display: true,
-                                text: '组件类型'
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: '市值 (十亿美元)' }
+                            },
+                            x: {
+                                title: { display: true, text: '年份' }
                             }
                         }
                     }
+                }),
+                cpuGpuAreaChart: (ctx) => new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['计算单元 (ALU)', '缓存', '控制单元', '其他'],
+                        datasets: [
+                            {
+                                label: 'CPU',
+                                data: [20, 35, 30, 15],
+                                backgroundColor: '#36CFFB'
+                            },
+                            {
+                                label: 'GPU',
+                                data: [80, 10, 5, 5],
+                                backgroundColor: '#165DFF'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.dataset.label}: ${context.raw}%`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: { display: true, text: '芯片面积占比 (%)' }
+                            },
+                            x: {
+                                title: { display: true, text: '组件类型' }
+                            }
+                        }
+                    }
+                })
+            } : {};
+
+            slideElements.forEach((slide, index) => {
+                const heading = slide.querySelector('h1, h2, h3');
+                const title = heading ? heading.textContent.trim() : `第 ${index + 1} 页`;
+                slide.dataset.title = title;
+                if (slide.id) {
+                    slideIndexById[slide.id] = index;
+                }
+                if (index === 0) {
+                    slide.classList.add('is-active');
+                    slide.style.display = 'block';
+                } else {
+                    slide.style.display = 'none';
+                }
+
+                if (dotsContainer) {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'ppt-dot';
+                    dot.textContent = String(index + 1);
+                    dot.title = title;
+                    dot.setAttribute('aria-label', `跳转至${title}`);
+                    dot.addEventListener('click', () => goToSlide(index));
+                    dotsContainer.appendChild(dot);
+                    dots.push(dot);
+                } else {
+                    dots.push(null);
                 }
             });
+
+            function initializeChartsForSlide(slide) {
+                if (!canCreateCharts || !slide) {
+                    return;
+                }
+                Object.entries(chartInitializers).forEach(([id, initializer]) => {
+                    const canvas = slide.querySelector(`#${id}`);
+                    if (!canvas) {
+                        return;
+                    }
+                    if (!chartInstances[id]) {
+                        const ctx = canvas.getContext('2d');
+                        chartInstances[id] = initializer(ctx);
+                    }
+                    if (chartInstances[id]) {
+                        setTimeout(() => chartInstances[id].resize(), 60);
+                    }
+                });
+            }
+
+            function updateWrapperHeight(slide) {
+                if (!slidesWrapper || !slide) {
+                    return;
+                }
+                requestAnimationFrame(() => {
+                    slidesWrapper.style.height = `${slide.offsetHeight}px`;
+                });
+            }
+
+            function updateControls() {
+                if (counterEl) {
+                    counterEl.textContent = `第 ${currentIndex + 1} / ${slideElements.length} 页`;
+                }
+                if (prevButton) {
+                    prevButton.disabled = currentIndex === 0;
+                }
+                if (nextButton) {
+                    nextButton.disabled = currentIndex === slideElements.length - 1;
+                }
+                if (progressFill) {
+                    const progress = ((currentIndex + 1) / slideElements.length) * 100;
+                    progressFill.style.width = `${progress}%`;
+                }
+                dots.forEach((dot, index) => {
+                    if (dot) {
+                        dot.classList.toggle('is-active', index === currentIndex);
+                    }
+                });
+                if (backToTopBtn) {
+                    if (currentIndex === 0) {
+                        backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                    } else {
+                        backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    }
+                }
+            }
+
+            function finishTransition(slide, classes) {
+                classes.forEach(cls => slide.classList.remove(cls));
+                slide.removeEventListener('animationend', handlerMap.get(slide));
+                handlerMap.delete(slide);
+            }
+
+            const handlerMap = new Map();
+
+            function addAnimationHandler(slide, classes, callback) {
+                const handler = () => {
+                    callback();
+                    finishTransition(slide, classes);
+                };
+                handlerMap.set(slide, handler);
+                slide.addEventListener('animationend', handler, { once: true });
+            }
+
+            function goToSlide(targetIndex) {
+                if (isTransitioning || targetIndex === currentIndex || targetIndex < 0 || targetIndex >= slideElements.length) {
+                    return;
+                }
+
+                const currentSlide = slideElements[currentIndex];
+                const nextSlide = slideElements[targetIndex];
+                const direction = targetIndex > currentIndex ? 'forward' : 'backward';
+
+                isTransitioning = true;
+                nextSlide.style.display = 'block';
+                nextSlide.classList.add('is-active', direction === 'forward' ? 'enter-from-right' : 'enter-from-left');
+                initializeChartsForSlide(nextSlide);
+                updateWrapperHeight(nextSlide);
+                setTimeout(() => updateWrapperHeight(nextSlide), 420);
+
+                addAnimationHandler(nextSlide, ['enter-from-right', 'enter-from-left'], () => {});
+
+                currentSlide.classList.add(direction === 'forward' ? 'leave-to-left' : 'leave-to-right');
+                addAnimationHandler(currentSlide, ['leave-to-left', 'leave-to-right'], () => {
+                    currentSlide.classList.remove('is-active');
+                    currentSlide.style.display = 'none';
+                    isTransitioning = false;
+                });
+
+                currentIndex = targetIndex;
+                updateControls();
+            }
+
+            const goNext = () => goToSlide(currentIndex + 1);
+            const goPrev = () => goToSlide(currentIndex - 1);
+
+            prevButton?.addEventListener('click', goPrev);
+            nextButton?.addEventListener('click', goNext);
+            backToTopBtn?.addEventListener('click', () => goToSlide(0));
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', event => {
+                    const href = anchor.getAttribute('href');
+                    if (!href || href === '#') {
+                        return;
+                    }
+                    const targetId = href.slice(1);
+                    const targetIndex = slideIndexById[targetId];
+                    if (typeof targetIndex === 'number') {
+                        event.preventDefault();
+                        mobileMenu?.classList.add('hidden');
+                        goToSlide(targetIndex);
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', event => {
+                const tagName = event.target.tagName;
+                if (tagName === 'INPUT' || tagName === 'TEXTAREA' || event.target.isContentEditable) {
+                    return;
+                }
+
+                if (event.key === 'ArrowRight' || event.key === 'PageDown') {
+                    event.preventDefault();
+                    goNext();
+                } else if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+                    event.preventDefault();
+                    goPrev();
+                } else if (event.key === 'Home') {
+                    event.preventDefault();
+                    goToSlide(0);
+                } else if (event.key === 'End') {
+                    event.preventDefault();
+                    goToSlide(slideElements.length - 1);
+                } else if (event.key === ' ' && !event.shiftKey) {
+                    event.preventDefault();
+                    goNext();
+                }
+            });
+
+            window.addEventListener('resize', () => {
+                updateWrapperHeight(slideElements[currentIndex]);
+            });
+
+            initializeChartsForSlide(slideElements[0]);
+            updateWrapperHeight(slideElements[0]);
+            updateControls();
         });
     </script>
 </body>
