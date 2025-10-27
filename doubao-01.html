@@ -1,0 +1,1641 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI技术核心解析报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        // Tailwind 配置
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFFB',
+                        dark: '#1D2129',
+                        light: '#F2F3F5',
+                        accent: '#722ED1',
+                        neutral: '#86909C',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .bg-gradient-tech {
+                background: linear-gradient(135deg, #165DFF 0%, #36CFFB 100%);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.1), 0 10px 10px -5px rgba(22, 93, 255, 0.04);
+            }
+        }
+    </style>
+</head>
+<body class="bg-light font-sans text-dark">
+    <!-- 顶部导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-microchip text-primary text-2xl"></i>
+                    <h1 class="text-xl font-bold text-primary hidden sm:block">AI技术核心解析</h1>
+                </div>
+                
+                <!-- 桌面端导航 -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#overview" class="text-dark hover:text-primary transition-colors font-medium">项目概况</a>
+                    <a href="#infrastructure" class="text-dark hover:text-primary transition-colors font-medium">算力基础</a>
+                    <a href="#nvidia" class="text-dark hover:text-primary transition-colors font-medium">英伟达分析</a>
+                    <a href="#gpu" class="text-dark hover:text-primary transition-colors font-medium">算力卡逻辑</a>
+                    <a href="#models" class="text-dark hover:text-primary transition-colors font-medium">模型技术</a>
+                    <a href="#deployment" class="text-dark hover:text-primary transition-colors font-medium">部署应用</a>
+                </nav>
+                
+                <!-- 移动端菜单按钮 -->
+                <button id="menuBtn" class="md:hidden text-dark hover:text-primary">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- 移动端导航菜单 -->
+            <div id="mobileMenu" class="md:hidden hidden pb-4">
+                <nav class="flex flex-col space-y-3">
+                    <a href="#overview" class="text-dark hover:text-primary transition-colors py-2">项目概况</a>
+                    <a href="#infrastructure" class="text-dark hover:text-primary transition-colors py-2">算力基础</a>
+                    <a href="#nvidia" class="text-dark hover:text-primary transition-colors py-2">英伟达分析</a>
+                    <a href="#gpu" class="text-dark hover:text-primary transition-colors py-2">算力卡逻辑</a>
+                    <a href="#models" class="text-dark hover:text-primary transition-colors py-2">模型技术</a>
+                    <a href="#deployment" class="text-dark hover:text-primary transition-colors py-2">部署应用</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="bg-gradient-tech text-white py-16 md:py-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto text-center">
+                <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-shadow">AI技术核心解析报告</h1>
+                <p class="text-lg md:text-xl opacity-90 mb-8">为体制内高层领导和技术团队提供全面、深入的AI技术解读</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#overview" class="bg-white text-primary px-6 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-all shadow-lg">
+                        开始阅读 <i class="fa fa-arrow-down ml-2"></i>
+                    </a>
+                    <a href="#table-of-contents" class="bg-transparent border-2 border-white px-6 py-3 rounded-lg font-medium hover:bg-white hover:bg-opacity-10 transition-all">
+                        查看目录 <i class="fa fa-list-ul ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 目录部分 -->
+    <section id="table-of-contents" class="py-12 bg-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">报告目录</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 目录卡片 1 -->
+                    <div class="bg-light rounded-xl p-6 card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-info"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold">项目概况与基础</h3>
+                        </div>
+                        <ul class="space-y-3 text-neutral">
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#overview" class="hover:text-primary transition-colors">项目概况与目标</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#infrastructure" class="hover:text-primary transition-colors">AI技术发展背景与算力基础设施</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#nvidia" class="hover:text-primary transition-colors">英伟达算力卡龙头地位分析</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 目录卡片 2 -->
+                    <div class="bg-light rounded-xl p-6 card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-microchip"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold">核心技术解析</h3>
+                        </div>
+                        <ul class="space-y-3 text-neutral">
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#gpu" class="hover:text-primary transition-colors">算力卡底层逻辑详解</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#attention" class="hover:text-primary transition-colors">大模型自注意力学习机制</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#ml" class="hover:text-primary transition-colors">机器学习底层逻辑基础</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 目录卡片 3 -->
+                    <div class="bg-light rounded-xl p-6 card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-cogs"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold">应用与部署</h3>
+                        </div>
+                        <ul class="space-y-3 text-neutral">
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#deployment" class="hover:text-primary transition-colors">大模型部署技术体系</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#training" class="hover:text-primary transition-colors">大模型训练技术体系</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#distillation" class="hover:text-primary transition-colors">知识蒸馏技术详解</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 目录卡片 4 -->
+                    <div class="bg-light rounded-xl p-6 card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center mr-4">
+                                <i class="fa fa-database"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold">知识体系</h3>
+                        </div>
+                        <ul class="space-y-3 text-neutral">
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#knowledge" class="hover:text-primary transition-colors">知识库技术体系</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#conclusion" class="hover:text-primary transition-colors">总结与展望</a>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fa fa-angle-right text-primary mt-1 mr-2"></i>
+                                <a href="#glossary" class="hover:text-primary transition-colors">核心术语表</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要内容区域 -->
+    <main class="py-12">
+        <!-- 项目概况部分 -->
+        <section id="overview" class="py-12 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-info text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold">项目概况与目标</h2>
+                    </div>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        <p class="mb-4">在人工智能技术快速发展的今天，<strong class="text-primary">AI知识普及</strong>已成为政府部门和企事业单位面临的重要课题。本报告旨在为体制内高层领导和技术团队提供一份全面、深入的AI技术解读，重点解决大家对AI技术的疑惑和认知盲区。</p>
+                        
+                        <p class="mb-6">本报告将围绕<strong class="text-primary">英伟达算力卡龙头地位、算力卡底层逻辑、大模型自注意力机制、机器学习底层逻辑、大模型部署、大模型训练、知识蒸馏、知识库、智能体开发</strong>等九大核心技术主题展开深入分析。通过大量的底层逻辑解释和实际应用案例，帮助受众全面理解AI技术的原理、价值和应用前景。</p>
+                        
+                        <div class="bg-light rounded-xl p-6 mb-8">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">本报告的核心价值</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>为体制内高层领导提供AI技术的战略认知框架，帮助其制定相关政策和投资决策</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>为技术团队提供深入的技术原理分析，指导其进行AI项目的规划和实施</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-primary mt-1 mr-3"></i>
+                                    <span>填补AI技术认知鸿沟，促进跨部门、跨领域的AI技术交流与合作</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-light rounded-xl p-5 card-hover">
+                                <div class="text-primary text-3xl mb-4">
+                                    <i class="fa fa-line-chart"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">战略决策支持</h3>
+                                <p class="text-neutral">提供AI技术发展趋势分析，助力制定科学合理的AI发展战略和投资决策</p>
+                            </div>
+                            
+                            <div class="bg-light rounded-xl p-5 card-hover">
+                                <div class="text-primary text-3xl mb-4">
+                                    <i class="fa fa-book"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">技术知识普及</h3>
+                                <p class="text-neutral">系统讲解AI核心技术原理，帮助非技术背景领导理解AI技术价值与应用</p>
+                            </div>
+                            
+                            <div class="bg-light rounded-xl p-5 card-hover">
+                                <div class="text-primary text-3xl mb-4">
+                                    <i class="fa fa-cogs"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold mb-2">实践应用指导</h3>
+                                <p class="text-neutral">提供AI项目实施的技术路径和方法，指导技术团队开展AI项目落地</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 算力基础设施部分 -->
+        <section id="infrastructure" class="py-12 bg-light">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-server text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold">AI技术发展背景与算力基础设施</h2>
+                    </div>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        <!-- 1.1 AI技术发展历程与现状 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">1.1 AI技术发展历程与现状</h3>
+                            
+                            <p class="mb-4">人工智能技术的发展经历了从实验室研究到产业应用的重要转变。<strong>深度学习</strong>作为AI的核心技术，通过多层神经网络的构建，使机器具备了强大的模式识别和数据处理能力。特别是2017年Transformer架构的提出，彻底改变了AI模型的训练和推理方式。</p>
+                            
+                            <p class="mb-6">当前，AI技术已在自然语言处理、计算机视觉、智能决策等领域取得突破性进展。<strong>大语言模型</strong>的出现更是将AI推向了新的高度，GPT-4、Claude等模型展现出了令人惊叹的语言理解和生成能力。这些技术的成功离不开强大的算力支撑，而英伟达正是这一算力基础设施的核心供应商。</p>
+                            
+                            <!-- AI技术发展时间线 -->
+                            <div class="relative border-l-2 border-primary pl-6 pb-2 mb-6">
+                                <div class="relative mb-8">
+                                    <div class="absolute -left-[31px] w-5 h-5 bg-primary rounded-full"></div>
+                                    <h4 class="text-lg font-semibold mb-1">2012年</h4>
+                                    <p class="text-neutral">AlexNet在ImageNet竞赛中夺冠，深度学习开始兴起</p>
+                                </div>
+                                
+                                <div class="relative mb-8">
+                                    <div class="absolute -left-[31px] w-5 h-5 bg-primary rounded-full"></div>
+                                    <h4 class="text-lg font-semibold mb-1">2017年</h4>
+                                    <p class="text-neutral">Transformer架构提出，彻底改变NLP领域</p>
+                                </div>
+                                
+                                <div class="relative mb-8">
+                                    <div class="absolute -left-[31px] w-5 h-5 bg-primary rounded-full"></div>
+                                    <h4 class="text-lg font-semibold mb-1">2018年</h4>
+                                    <p class="text-neutral">BERT模型发布，预训练+微调模式成为主流</p>
+                                </div>
+                                
+                                <div class="relative mb-8">
+                                    <div class="absolute -left-[31px] w-5 h-5 bg-primary rounded-full"></div>
+                                    <h4 class="text-lg font-semibold mb-1">2020年</h4>
+                                    <p class="text-neutral">GPT-3发布，参数规模达到1750亿，引发广泛关注</p>
+                                </div>
+                                
+                                <div class="relative">
+                                    <div class="absolute -left-[31px] w-5 h-5 bg-primary rounded-full"></div>
+                                    <h4 class="text-lg font-semibold mb-1">2022-2024年</h4>
+                                    <p class="text-neutral">生成式AI爆发，GPT-4、Claude、LLaMA等模型相继发布，AI应用快速普及</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 1.2 全球AI芯片市场格局 -->
+                        <div class="mb-6">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">1.2 全球AI芯片市场格局</h3>
+                            
+                            <p class="mb-4">根据最新数据，<strong>2024年全球AI芯片市场规模达到2700亿美元</strong>，其中英伟达占据了绝对主导地位。不同统计口径显示，英伟达在全球AI芯片市场的份额在<strong>92%-97%</strong>之间。在数据中心GPU市场，英伟达的份额更是高达<strong>98%</strong>，2023年出货量376万台，收入达362亿美元。</p>
+                            
+                            <p class="mb-6">在中国市场，情况则有所不同。根据2024年的数据，英伟达在国内AI芯片市场的市占率约为<strong>83.2%</strong>，华为以14.6%的份额位居第二，海光信息和寒武纪分别占1.4%和0.8%。然而，受地缘政治影响，2025年第三季度英伟达在华AI芯片份额已不足5%，高端市场更是降至0%。</p>
+                            
+                            <!-- 全球AI芯片市场份额图表 -->
+                            <div class="bg-white p-4 rounded-xl shadow-sm mb-8">
+                                <h4 class="text-lg font-semibold mb-4 text-center">2024年全球AI芯片市场份额</h4>
+                                <div class="h-80">
+                                    <canvas id="globalAiChipChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 中国AI芯片市场份额图表 -->
+                            <div class="bg-white p-4 rounded-xl shadow-sm">
+                                <h4 class="text-lg font-semibold mb-4 text-center">2024年中国AI芯片市场份额</h4>
+                                <div class="h-80">
+                                    <canvas id="chinaAiChipChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 英伟达算力卡龙头地位分析 -->
+        <section id="nvidia" class="py-12 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-trophy text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold">英伟达算力卡龙头地位分析</h2>
+                    </div>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        <!-- 2.1 英伟达发展历程与市场地位 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">2.1 英伟达发展历程与市场地位</h3>
+                            
+                            <p class="mb-4">英伟达的成功并非一蹴而就。公司成立于1993年，由黄仁勋、Chris Malachowsky和Curtis Priem三人共同创立，初始愿景是将3D图形技术带入游戏和多媒体市场。<strong>1999年是英伟达发展史上的重要转折点</strong>，公司推出了划时代的GeForce 256显卡，首次定义了"GPU"（图形处理器）概念。</p>
+                            
+                            <p class="mb-4">真正改变英伟达命运的是2006年推出的<strong>CUDA架构</strong>。这一技术将GPU应用拓展至通用计算领域，开启了高性能计算（HPC）的新纪元。2010年后，随着深度学习的兴起，英伟达GPU因其强大的并行计算能力成为AI训练的首选硬件。特斯拉实验室发现GTX480芯片训练神经网络的速度竟是至强CPU的12倍，这一发现促使吴恩达在著名的猫脸识别实验中大规模采用GPU集群。</p>
+                            
+                            <p class="mb-6">从市值变化可以看出英伟达的快速增长：1999年上市时市值约2亿美元，2022年ChatGPT引爆生成式AI需求后市值突破1万亿美元，2024年6月更是突破<strong>3万亿美元</strong>，超越苹果成为全球第二大公司。</p>
+                            
+                            <!-- 英伟达市值增长图表 -->
+                            <div class="bg-light p-4 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-4 text-center">英伟达市值增长趋势 (1999-2024)</h4>
+                                <div class="h-80">
+                                    <canvas id="nvidiaMarketCapChart"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- 英伟达发展里程碑 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">1993年</h4>
+                                    <p class="text-neutral">英伟达公司成立</p>
+                                </div>
+                                
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">1999年</h4>
+                                    <p class="text-neutral">推出GeForce 256，首次定义GPU概念</p>
+                                </div>
+                                
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">2006年</h4>
+                                    <p class="text-neutral">发布CUDA架构，开启通用计算新纪元</p>
+                                </div>
+                                
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">2012年</h4>
+                                    <p class="text-neutral">GPU开始用于深度学习，AI计算元年</p>
+                                </div>
+                                
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">2022年</h4>
+                                    <p class="text-neutral">市值突破1万亿美元，受益于生成式AI</p>
+                                </div>
+                                
+                                <div class="bg-light p-4 rounded-lg">
+                                    <h4 class="font-semibold mb-2">2024年</h4>
+                                    <p class="text-neutral">市值突破3万亿美元，推出Blackwell架构</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 2.2 英伟达成为算力卡龙头的核心原因 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">2.2 英伟达成为算力卡龙头的核心原因</h3>
+                            
+                            <p class="mb-4">英伟达能够成为算力卡龙头，主要源于其在<strong>技术、生态、供应链</strong>三个方面构建的深厚护城河：</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                                <!-- 技术优势 -->
+                                <div class="bg-light rounded-xl p-5 card-hover">
+                                    <div class="text-primary text-2xl mb-3">
+                                        <i class="fa fa-microchip"></i>
+                                    </div>
+                                    <h4 class="text-lg font-semibold mb-2">技术优势</h4>
+                                    <ul class="space-y-2 text-neutral text-sm">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>架构创新，每代性能提升50%+</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>Blackwell B200晶体管达2080亿个</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>AI算力达20 PFLOPS，是H100的5倍</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>架构更新周期缩短至1年</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 生态系统 -->
+                                <div class="bg-light rounded-xl p-5 card-hover">
+                                    <div class="text-primary text-2xl mb-3">
+                                        <i class="fa fa-sitemap"></i>
+                                    </div>
+                                    <h4 class="text-lg font-semibold mb-2">生态系统</h4>
+                                    <ul class="space-y-2 text-neutral text-sm">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>600万+开发者使用CUDA平台</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>900+加速库及模型支持</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>cuDNN、TensorRT等工具链优化</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>主流AI框架优先支持CUDA</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 供应链掌控 -->
+                                <div class="bg-light rounded-xl p-5 card-hover">
+                                    <div class="text-primary text-2xl mb-3">
+                                        <i class="fa fa-link"></i>
+                                    </div>
+                                    <h4 class="text-lg font-semibold mb-2">供应链掌控</h4>
+                                    <ul class="space-y-2 text-neutral text-sm">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>深度绑定台积电先进产能</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>独占台积电90% CoWoS封装产能</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>4nm工艺，2026年升级至3nm</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check text-primary mt-1 mr-2"></i>
+                                            <span>3.35TB/s显存带宽技术领先</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 2.3 英伟达最新产品技术优势 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">2.3 英伟达最新产品技术优势</h3>
+                            
+                            <p class="mb-4">英伟达最新一代产品展现出了令人瞩目的技术进步：</p>
+                            
+                            <div class="overflow-x-auto mb-6">
+                                <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                    <thead>
+                                        <tr class="bg-primary text-white">
+                                            <th class="py-3 px-4 text-left">产品型号</th>
+                                            <th class="py-3 px-4 text-left">架构</th>
+                                            <th class="py-3 px-4 text-left">显存容量</th>
+                                            <th class="py-3 px-4 text-left">显存带宽</th>
+                                            <th class="py-3 px-4 text-left">AI算力</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="py-3 px-4 font-medium">H100</td>
+                                            <td class="py-3 px-4">Hopper</td>
+                                            <td class="py-3 px-4">80GB HBM3</td>
+                                            <td class="py-3 px-4">3.35TB/s</td>
+                                            <td class="py-3 px-4">~4 PFLOPS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-4 font-medium">H200</td>
+                                            <td class="py-3 px-4">Hopper</td>
+                                            <td class="py-3 px-4">141GB HBM3e</td>
+                                            <td class="py-3 px-4">4.8TB/s</td>
+                                            <td class="py-3 px-4">~4.5 PFLOPS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-4 font-medium">B200</td>
+                                            <td class="py-3 px-4">Blackwell</td>
+                                            <td class="py-3 px-4">192GB HBM3e</td>
+                                            <td class="py-3 px-4">8TB/s</td>
+                                            <td class="py-3 px-4">18-20 PFLOPS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 px-4 font-medium">DGX B200</td>
+                                            <td class="py-3 px-4">Blackwell</td>
+                                            <td class="py-3 px-4">1.4TB (8×B200)</td>
+                                            <td class="py-3 px-4">64TB/s</td>
+                                            <td class="py-3 px-4">144 PFLOPS</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <p class="mb-2"><strong>H100</strong>作为Hopper架构的代表作，采用80GB HBM3显存，带宽3.35TB/s，在FP16精度下的峰值性能为989.5 Tflops。</p>
+                            
+                            <p class="mb-2"><strong>H200</strong>可以看作是H100的"显存增强版"，将显存从80GB HBM3升级到<strong>141GB HBM3e</strong>，带宽提升至4.8TB/s，处理1T参数模型时吞吐量提升15-20%。</p>
+                            
+                            <p class="mb-2"><strong>B200</strong>代表了Blackwell架构的最新成就，拥有192GB HBM3e显存，带宽高达<strong>8TB/s</strong>，AI算力达到18-20 PFLOPS，支持FP4精度和第五代NVLink技术。更重要的是，B200采用双芯片设计，通过NV-HBI高速连接通道实现10TB/s的芯片间带宽。</p>
+                            
+                            <p><strong>DGX B200系统</strong>配备8颗B200 GPU，通过第五代NVLink互联，相比前一代系统提供高达<strong>3倍的训练效能和15倍的推理效能</strong>。该系统可提供144 petaflops的AI性能、1.4TB GPU显存和64TB/s的显存带宽，使万亿参数模型实时推理速度比上一代提升15倍。</p>
+                        </div>
+                        
+                        <!-- 2.4 与竞争对手的技术对比 -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-primary">2.4 与竞争对手的技术对比</h3>
+                            
+                            <p class="mb-4">尽管英伟达占据绝对优势，但竞争对手也在努力追赶：</p>
+                            
+                            <div class="bg-light p-5 rounded-xl mb-6">
+                                <h4 class="text-lg font-semibold mb-3">主要竞争对手技术参数对比</h4>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <h5 class="font-medium mb-2">AMD Instinct MI325X (2024年四季度上市)</h5>
+                                        <ul class="space-y-1 text-neutral pl-5 list-disc">
+                                            <li>计算性能是英伟达H200的1.3倍</li>
+                                            <li>内存容量是H200的2倍</li>
+                                            <li>带宽是H200的1.3倍</li>
+                                            <li>基于Zen 5架构，集成XDNA 2 NPU和RDNA 3.5 GPU</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="font-medium mb-2">英特尔Gaudi 3</h5>
+                                        <ul class="space-y-1 text-neutral pl-5 list-disc">
+                                            <li>大语言模型训练速度比英伟达H100平均快40%</li>
+                                            <li>推理能效表现领先50%</li>
+                                            <li>半精度（FP16/BF16）下性能比H100领先1.85倍</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <p class="mb-4">然而，这些竞争对手在<strong>软件生态</strong>方面与英伟达仍有巨大差距。AMD的SGLang框架生态丰富度不足CUDA的1/5，MI300X需依赖第三方工具适配，导致实际性能折扣达30%。</p>
+                            
+                            <div class="bg-primary bg-opacity-10 p-5 rounded-xl">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">生态差距的影响</h4>
+                                <p class="mb-2">这种生态差距使得企业从英伟达平台迁移的成本极高，主要体现在：</p>
+                                <ul class="space-y-2 text-neutral pl-5 list-disc">
+                                    <li>代码重构：需要修改大量依赖CUDA的代码</li>
+                                    <li>性能优化：新平台需要重新进行性能调优</li>
+                                    <li>工具链适配：现有工具链可能无法直接使用</li>
+                                    <li>人才培养：需要培养熟悉新平台的技术人才</li>
+                                    <li>时间成本：整个迁移过程可能需要数月甚至数年</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 算力卡底层逻辑详解 -->
+        <section id="gpu" class="py-12 bg-light">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-cogs text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold">算力卡底层逻辑详解</h2>
+                    </div>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        <!-- 3.1 GPU与CPU架构的本质区别 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">3.1 GPU与CPU架构的本质区别</h3>
+                            
+                            <p class="mb-4">要理解算力卡的底层逻辑，首先需要了解GPU与CPU在架构设计上的根本差异。<strong>CPU和GPU的设计目标完全不同</strong>，它们分别针对两种不同的应用场景进行了优化。</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- CPU架构特点 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary flex items-center">
+                                        <i class="fa fa-desktop mr-2"></i> CPU架构特点
+                                    </h4>
+                                    <ul class="space-y-2 text-neutral">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>设计目标</strong>：通用性和灵活性</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>核心数量</strong>：少量强大核心（通常4-16个）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>主频</strong>：较高（通常3-5GHz）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>缓存</strong>：大容量多级缓存</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>优势</strong>：低延迟、强单线程性能</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>适用场景</strong>：复杂逻辑判断、任务调度、多任务处理</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- GPU架构特点 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary flex items-center">
+                                        <i class="fa fa-microchip mr-2"></i> GPU架构特点
+                                    </h4>
+                                    <ul class="space-y-2 text-neutral">
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>设计目标</strong>：大规模并行计算</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>核心数量</strong>：大量简单计算单元（数千个流处理器）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>主频</strong>：相对较低（通常1-2GHz）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>缓存</strong>：较小缓存，依赖高带宽显存</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>优势</strong>：高吞吐量、强并行计算能力</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fa fa-check-circle text-primary mt-1 mr-2"></i>
+                                            <span><strong>适用场景</strong>：矩阵运算、图像处理、深度学习</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- CPU与GPU芯片面积分配对比 -->
+                            <div class="bg-white p-5 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-4 text-center">CPU与GPU芯片面积分配对比</h4>
+                                <div class="h-80">
+                                    <canvas id="cpuGpuAreaChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 3.2 GPU并行计算原理与优势 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">3.2 GPU并行计算原理与优势</h3>
+                            
+                            <p class="mb-4">GPU的并行计算能力源于其独特的架构设计：</p>
+                            
+                            <div class="space-y-6 mb-6">
+                                <!-- SIMD架构 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">单指令多数据（SIMD）架构</h4>
+                                    <p class="mb-2">SIMD是GPU并行计算的基础。在这种架构中，多个计算单元同时执行相同的指令，但处理不同的数据。这与CPU的复杂指令集形成鲜明对比。</p>
+                                    <div class="bg-light p-3 rounded-lg">
+                                        <p class="text-sm text-neutral italic">例如：在图像处理中，对每个像素执行相同的滤波操作，GPU可以同时对多个像素执行该操作，而CPU通常需要逐个处理。</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- 流式多处理器 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">流式多处理器（SM）</h4>
+                                    <p class="mb-2">SM是NVIDIA GPU架构的核心。每个SM都是一个高度并行的处理单元，包含多个CUDA核心、共享内存、寄存器等组件。</p>
+                                    <p class="mb-2">以Ampere架构为例，每个SM包含：</p>
+                                    <ul class="space-y-1 text-neutral pl-5 list-disc">
+                                        <li>64个FP32核心</li>
+                                        <li>64个INT32核心</li>
+                                        <li>32个FP64核心</li>
+                                        <li>4个Tensor Core</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- 线程层次结构 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">线程层次结构</h4>
+                                    <p class="mb-2">CUDA采用Grid-Block-Thread的三级结构：</p>
+                                    <ol class="space-y-2 text-neutral pl-5 list-decimal">
+                                        <li>
+                                            <strong>线程（Thread）</strong>：最基本的执行单元，每个线程执行相同的内核函数
+                                        </li>
+                                        <li>
+                                            <strong>线程块（Thread Block）</strong>：多个线程组成的集合，线程块内的线程可以共享内存并同步
+                                        </li>
+                                        <li>
+                                            <strong>网格（Grid）</strong>：多个线程块组成的集合，一个Grid对应一个内核函数的完整执行
+                                        </li>
+                                    </ol>
+                                    <p class="mt-3">每个CUDA核心可以并发执行多个线程，通常以32个线程为一组，称为Warp。</p>
+                                </div>
+                            </div>
+                            
+                            <!-- GPU并行计算优势 -->
+                            <div class="bg-primary bg-opacity-10 p-5 rounded-xl">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">GPU并行计算优势</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-white p-3 rounded-lg text-center">
+                                        <div class="text-primary text-2xl mb-2">
+                                            <i class="fa fa-bolt"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1">极高的吞吐量</h5>
+                                        <p class="text-sm text-neutral">能够同时处理大量数据，适合大规模并行任务</p>
+                                    </div>
+                                    
+                                    <div class="bg-white p-3 rounded-lg text-center">
+                                        <div class="text-primary text-2xl mb-2">
+                                            <i class="fa fa-tachometer"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1">强大的计算密度</h5>
+                                        <p class="text-sm text-neutral">通过大量计算单元实现惊人的峰值算力</p>
+                                    </div>
+                                    
+                                    <div class="bg-white p-3 rounded-lg text-center">
+                                        <div class="text-primary text-2xl mb-2">
+                                            <i class="fa fa-battery-full"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1">优秀的能效比</h5>
+                                        <p class="text-sm text-neutral">处理并行任务时，单位功耗下的计算能力远超CPU</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 3.3 CUDA架构的底层实现机制 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">3.3 CUDA架构的底层实现机制</h3>
+                            
+                            <p class="mb-4">CUDA（Compute Unified Device Architecture）是NVIDIA推出的并行计算平台和编程模型，它让开发者能够使用C/C++、Python等熟悉的编程语言直接控制GPU进行通用计算。</p>
+                            
+                            <div class="bg-white p-5 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">CUDA架构核心组成</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <h5 class="font-medium mb-2">1. 流式多处理器（SM）</h5>
+                                        <p class="text-neutral">CUDA的底层实现基于SM结构。每个SM包含多个CUDA核心，这些核心能够并行执行大量线程。SM是GPU的计算核心，负责执行CUDA内核函数。</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="font-medium mb-2">2. PTX中间表示</h5>
+                                        <p class="text-neutral">CUDA程序最终被编译成PTX（Parallel Thread Execution）中间表示，这是一种用于CUDA设备代码的虚拟指令集架构。PTX代码可以在不同代际的NVIDIA GPU上运行，提供了良好的兼容性。</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="font-medium mb-2">3. 内存层次结构</h5>
+                                        <p class="text-neutral mb-2">CUDA提供了多层次的内存结构，以优化数据访问效率：</p>
+                                        <ul class="space-y-1 text-neutral pl-5 list-disc">
+                                            <li>寄存器：每个线程私有，访问速度最快</li>
+                                            <li>共享内存：线程块内共享，访问速度快</li>
+                                            <li>全局内存：所有线程共享，访问速度较慢</li>
+                                            <li>常量内存：只读内存，适合存储不变数据</li>
+                                            <li>纹理内存：优化的只读内存，适合图像数据</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 线程调度机制 -->
+                            <div class="bg-white p-5 rounded-xl shadow-sm">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">线程调度机制</h4>
+                                <p class="mb-3">线程调度机制是CUDA高效运行的关键。每个SM有两个线程束调度器和两个指令调度单元，其工作原理如下：</p>
+                                
+                                <ol class="space-y-3 text-neutral pl-5 list-decimal mb-4">
+                                    <li>当线程块被分配给SM时，线程块内的所有线程被分成Warp（通常32个线程为一个Warp）</li>
+                                    <li>调度器选择就绪的Warp执行指令</li>
+                                    <li>当一个Warp因等待数据（如从全局内存读取数据）而暂停时，调度器立即切换到另一个准备就绪的Warp</li>
+                                    <li>通过这种方式，保持计算单元始终处于工作状态，隐藏内存延迟</li>
+                                </ol>
+                                
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-lg">
+                                    <p class="text-sm text-primary font-medium">关键优化点：内存延迟隐藏</p>
+                                    <p class="text-sm text-neutral">GPU的内存访问延迟通常很高（数百个时钟周期），通过Warp切换机制，GPU可以在等待一个Warp的内存操作完成时，执行其他Warp的计算，从而有效隐藏内存延迟，提高计算单元利用率。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 3.4 内存架构与高速互联技术 -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-primary">3.4 内存架构与高速互联技术</h3>
+                            
+                            <p class="mb-4">内存系统是影响GPU性能的关键因素。当前GPU主要采用两种内存技术：</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- GDDR6 -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">GDDR6内存技术</h4>
+                                    <p class="mb-2 text-neutral">GDDR6是传统的高速显存技术，具有以下特点：</p>
+                                    <ul class="space-y-2 text-neutral pl-5 list-disc">
+                                        <li>较高的带宽潜力（通常600GB/s以上）</li>
+                                        <li>功耗和热密度较大</li>
+                                        <li>需要强大的散热机制</li>
+                                        <li>成本相对较低</li>
+                                        <li>适合中低端GPU产品</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- HBM -->
+                                <div class="bg-white p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">HBM（高带宽内存）</h4>
+                                    <p class="mb-2 text-neutral">HBM代表了内存技术的最新发展，具有以下特点：</p>
+                                    <ul class="space-y-2 text-neutral pl-5 list-disc">
+                                        <li>采用3D堆叠架构和TSV技术</li>
+                                        <li>大幅缩短数据传输路径</li>
+                                        <li>更高的带宽（TB/s级别）</li>
+                                        <li>更低的功耗</li>
+                                        <li>成本较高，适合高端GPU产品</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- HBM发展历程 -->
+                            <div class="bg-white p-5 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-4 text-primary">HBM技术发展历程</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full border border-gray-200">
+                                        <thead>
+                                            <tr class="bg-primary text-white">
+                                                <th class="py-2 px-3 text-left">HBM版本</th>
+                                                <th class="py-2 px-3 text-left">发布年份</th>
+                                                <th class="py-2 px-3 text-left">带宽</th>
+                                                <th class="py-2 px-3 text-left">容量</th>
+                                                <th class="py-2 px-3 text-left">关键改进</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="py-2 px-3 font-medium">HBM2</td>
+                                                <td class="py-2 px-3">2016年</td>
+                                                <td class="py-2 px-3">256GB/s</td>
+                                                <td class="py-2 px-3">8GB</td>
+                                                <td class="py-2 px-3 text-sm text-neutral">首次大规模商用</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3 font-medium">HBM2e</td>
+                                                <td class="py-2 px-3">2018年</td>
+                                                <td class="py-2 px-3">461GB/s</td>
+                                                <td class="py-2 px-3">16GB</td>
+                                                <td class="py-2 px-3 text-sm text-neutral">传输速度提升至3.6Gbps</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3 font-medium">HBM3</td>
+                                                <td class="py-2 px-3">2022年</td>
+                                                <td class="py-2 px-3">~1TB/s</td>
+                                                <td class="py-2 px-3">32GB</td>
+                                                <td class="py-2 px-3 text-sm text-neutral">采用2.5D/3D架构</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="py-2 px-3 font-medium">HBM3e</td>
+                                                <td class="py-2 px-3">2024年</td>
+                                                <td class="py-2 px-3">1.15-1.225TB/s</td>
+                                                <td class="py-2 px-3">64GB+</td>
+                                                <td class="py-2 px-3 text-sm text-neutral">传输速率达8Gbps</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- NVLink技术 -->
+                            <div class="bg-white p-5 rounded-xl shadow-sm">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">NVLink高速互联技术</h4>
+                                <p class="mb-3 text-neutral">NVLink是英伟达开发的高速GPU互联技术，具有以下特点：</p>
+                                
+                                <ul class="space-y-2 text-neutral pl-5 list-disc mb-4">
+                                    <li>采用高速差分信号传输</li>
+                                    <li>支持多链路聚合</li>
+                                    <li>实现GPU间的高速低延迟通信</li>
+                                    <li>构建统一的内存空间</li>
+                                    <li>第五代NVLink提供1.8TB/s的双向带宽</li>
+                                    <li>可扩展至576个GPU集群</li>
+                                </ul>
+                                
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-lg">
+                                    <p class="text-sm text-primary font-medium">NVLink的重要性</p>
+                                    <p class="text-sm text-neutral">在大规模AI训练中，多个GPU需要频繁交换数据。NVLink技术大幅提高了GPU间的数据传输速度，减少了通信瓶颈，使得大规模GPU集群能够高效协同工作，显著提升了大模型的训练速度。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 大模型自注意力学习机制 -->
+        <section id="attention" class="py-12 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-8">
+                        <div class="bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                            <i class="fa fa-lightbulb-o text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold">大模型自注意力学习机制</h2>
+                    </div>
+                    
+                    <div class="prose prose-lg max-w-none">
+                        <!-- 4.1 自注意力机制的工作原理 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">4.1 自注意力机制的工作原理</h3>
+                            
+                            <p class="mb-4">自注意力机制（Self-Attention）是Transformer架构的核心创新，它彻底改变了模型处理序列数据的方式。与传统的循环神经网络（RNN）和长短期记忆网络（LSTM）不同，自注意力机制允许模型在处理序列中的每个元素时，直接关注序列中的所有其他元素，从而捕获长距离依赖关系。</p>
+                            
+                            <p class="mb-4">自注意力机制的核心思想可以用<strong>查询-键-值（Query-Key-Value）</strong>三元组来理解：</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <!-- Query -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-question-circle mr-2"></i>
+                                        <h4 class="font-semibold">查询（Query）</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">当前元素为了计算自己的新表示，向其他所有元素发出的"查询信号"</p>
+                                </div>
+                                
+                                <!-- Key -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-key mr-2"></i>
+                                        <h4 class="font-semibold">键（Key）</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">序列中其他元素为了响应查询而提供的"标识或标签"</p>
+                                </div>
+                                
+                                <!-- Value -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-list-alt mr-2"></i>
+                                        <h4 class="font-semibold">值（Value）</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">序列中其他元素所携带的"实际内容或信息"</p>
+                                </div>
+                            </div>
+                            
+                            <p class="mb-3">自注意力的计算过程可以概括为：</p>
+                            <ol class="space-y-2 text-neutral pl-5 list-decimal mb-6">
+                                <li>对每个查询，计算它与所有键的相似度得分</li>
+                                <li>将这些得分进行Softmax归一化，得到注意力权重</li>
+                                <li>根据权重对值进行加权求和，得到最终的自注意力输出</li>
+                            </ol>
+                            
+                            <!-- 数学公式 -->
+                            <div class="bg-light p-4 rounded-lg mb-6 text-center">
+                                <p class="font-medium mb-2">自注意力计算公式：</p>
+                                <p class="text-lg">$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$</p>
+                                <p class="text-sm text-neutral mt-2">其中，$Q$、$K$、$V$分别是查询、键、值矩阵，$d_k$是键向量的维度，$\sqrt{d_k}$是缩放因子，用于防止点积结果过大导致Softmax函数进入梯度极小的饱和区。</p>
+                            </div>
+                            
+                            <!-- 自注意力计算示意图 -->
+                            <div class="bg-white border border-gray-200 p-4 rounded-lg mb-6">
+                                <h4 class="text-lg font-semibold mb-3 text-center">自注意力计算过程示意图</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-center text-sm">
+                                    <!-- 输入 -->
+                                    <div class="border border-gray-200 p-2 rounded">
+                                        <p class="font-medium mb-1">输入序列</p>
+                                        <p class="text-neutral">The</p>
+                                        <p class="text-neutral">cat</p>
+                                        <p class="text-neutral">sat</p>
+                                        <p class="text-neutral">on</p>
+                                        <p class="text-neutral">the</p>
+                                        <p class="text-neutral">mat</p>
+                                    </div>
+                                    
+                                    <!-- 线性变换 -->
+                                    <div class="border border-gray-200 p-2 rounded">
+                                        <p class="font-medium mb-1">线性变换</p>
+                                        <p class="text-neutral">Q1, K1, V1</p>
+                                        <p class="text-neutral">Q2, K2, V2</p>
+                                        <p class="text-neutral">Q3, K3, V3</p>
+                                        <p class="text-neutral">Q4, K4, V4</p>
+                                        <p class="text-neutral">Q5, K5, V5</p>
+                                        <p class="text-neutral">Q6, K6, V6</p>
+                                    </div>
+                                    
+                                    <!-- 注意力权重 -->
+                                    <div class="border border-gray-200 p-2 rounded">
+                                        <p class="font-medium mb-1">注意力权重</p>
+                                        <p class="text-neutral">w11, w12...</p>
+                                        <p class="text-neutral">w21, w22...</p>
+                                        <p class="text-neutral">w31, w32...</p>
+                                        <p class="text-neutral">w41, w42...</p>
+                                        <p class="text-neutral">w51, w52...</p>
+                                        <p class="text-neutral">w61, w62...</p>
+                                    </div>
+                                    
+                                    <!-- 输出 -->
+                                    <div class="border border-gray-200 p-2 rounded">
+                                        <p class="font-medium mb-1">输出表示</p>
+                                        <p class="text-neutral">h1</p>
+                                        <p class="text-neutral">h2</p>
+                                        <p class="text-neutral">h3</p>
+                                        <p class="text-neutral">h4</p>
+                                        <p class="text-neutral">h5</p>
+                                        <p class="text-neutral">h6</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 4.2 Transformer架构的核心设计 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">4.2 Transformer架构的核心设计</h3>
+                            
+                            <p class="mb-4">Transformer架构由Vaswani等人在2017年提出，采用了完全基于注意力机制的设计，摒弃了传统的循环结构。整个架构包含编码器（Encoder）和解码器（Decoder）两部分，每部分都由多层自注意力和前馈神经网络组成。</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <!-- 编码器结构 -->
+                                <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">编码器结构</h4>
+                                    <p class="mb-2 text-neutral">编码器由多个相同的层堆叠而成，每一层包含两个子层：</p>
+                                    
+                                    <div class="space-y-4 mb-4">
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <h5 class="font-medium mb-1">1. 多头自注意力层</h5>
+                                            <p class="text-sm text-neutral">并行执行多个自注意力计算，捕捉不同类型的依赖关系</p>
+                                        </div>
+                                        
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <h5 class="font-medium mb-1">2. 前馈神经网络层</h5>
+                                            <p class="text-sm text-neutral">对每个位置的表示进行非线性变换，增强模型表达能力</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-neutral text-sm">每个子层都采用<strong>残差连接</strong>和<strong>层归一化</strong>技术，以提高训练的稳定性和模型的性能。</p>
+                                </div>
+                                
+                                <!-- 解码器结构 -->
+                                <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm">
+                                    <h4 class="text-lg font-semibold mb-3 text-primary">解码器结构</h4>
+                                    <p class="mb-2 text-neutral">解码器除了包含编码器的两个子层外，还有一个额外的多头注意力层：</p>
+                                    
+                                    <div class="space-y-4 mb-4">
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <h5 class="font-medium mb-1">1. 掩码多头自注意力层</h5>
+                                            <p class="text-sm text-neutral">防止模型关注未来位置的信息，适用于生成任务</p>
+                                        </div>
+                                        
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <h5 class="font-medium mb-1">2. 编码器-解码器注意力层</h5>
+                                            <p class="text-sm text-neutral">关注编码器的输出，帮助解码器理解输入序列中相关的部分</p>
+                                        </div>
+                                        
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <h5 class="font-medium mb-1">3. 前馈神经网络层</h5>
+                                            <p class="text-sm text-neutral">与编码器中的前馈网络类似，进行非线性变换</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <p class="text-neutral text-sm">解码器同样采用残差连接和层归一化技术，确保训练的稳定性。</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Transformer架构示意图 -->
+                            <div class="bg-light p-5 rounded-xl mb-6">
+                                <h4 class="text-lg font-semibold mb-4 text-center">Transformer整体架构示意图</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-center text-sm">
+                                    <!-- 输入嵌入 -->
+                                    <div class="col-span-1 md:col-span-1 p-2">
+                                        <div class="border border-gray-300 bg-white p-2 rounded h-full">
+                                            <p class="font-medium mb-2">输入嵌入</p>
+                                            <p class="text-neutral">词嵌入 + 位置编码</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 编码器堆叠 -->
+                                    <div class="col-span-1 md:col-span-1 p-2">
+                                        <div class="border border-gray-300 bg-white p-2 rounded h-full">
+                                            <p class="font-medium mb-2">编码器</p>
+                                            <p class="text-neutral">自注意力</p>
+                                            <p class="text-neutral">→</p>
+                                            <p class="text-neutral">前馈网络</p>
+                                            <p class="text-neutral">(×N层)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 箭头 -->
+                                    <div class="col-span-1 md:col-span-1 flex items-center justify-center">
+                                        <i class="fa fa-arrow-right text-primary text-2xl"></i>
+                                    </div>
+                                    
+                                    <!-- 解码器堆叠 -->
+                                    <div class="col-span-1 md:col-span-1 p-2">
+                                        <div class="border border-gray-300 bg-white p-2 rounded h-full">
+                                            <p class="font-medium mb-2">解码器</p>
+                                            <p class="text-neutral">掩码自注意力</p>
+                                            <p class="text-neutral">→</p>
+                                            <p class="text-neutral">编解码注意力</p>
+                                            <p class="text-neutral">→</p>
+                                            <p class="text-neutral">前馈网络</p>
+                                            <p class="text-neutral">(×N层)</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 输出层 -->
+                                    <div class="col-span-1 md:col-span-1 p-2">
+                                        <div class="border border-gray-300 bg-white p-2 rounded h-full">
+                                            <p class="font-medium mb-2">输出层</p>
+                                            <p class="text-neutral">线性变换</p>
+                                            <p class="text-neutral">→</p>
+                                            <p class="text-neutral">Softmax</p>
+                                            <p class="text-neutral">→ 预测结果</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 4.3 多头自注意力机制 -->
+                        <div class="mb-10">
+                            <h3 class="text-xl font-semibold mb-4 text-primary">4.3 多头自注意力机制</h3>
+                            
+                            <p class="mb-4">为了增强模型的表示能力，Transformer采用了<strong>多头自注意力（Multi-Head Attention）机制</strong>。多头机制不是执行单次注意力计算，而是将查询、键和值通过不同的线性变换投影$h$次（即$h$个"头"），并行地执行$h$次注意力计算，然后将结果拼接并再次进行线性变换。</p>
+                            
+                            <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">多头注意力的计算过程</h4>
+                                
+                                <ol class="space-y-3 text-neutral pl-5 list-decimal mb-4">
+                                    <li>
+                                        对于第$i$个头，计算：$\text{head}_i = \text{Attention}(QW_i^Q, KW_i^K, VW_i^V)$
+                                        <p class="text-sm mt-1">其中$W_i^Q, W_i^K, W_i^V$是第$i$个头的投影矩阵</p>
+                                    </li>
+                                    <li>
+                                        将$h$个头的输出拼接起来：$\text{Concat}(\text{head}_1, \dots, \text{head}_h)$
+                                    </li>
+                                    <li>
+                                        通过最终的线性变换得到输出：$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, \dots, \text{head}_h)W^O$
+                                        <p class="text-sm mt-1">其中$W^O$是最终的输出投影矩阵</p>
+                                    </li>
+                                </ol>
+                                
+                                <div class="bg-light p-3 rounded-lg">
+                                    <p class="text-sm text-primary font-medium">常见配置</p>
+                                    <p class="text-sm text-neutral">在原始Transformer论文中，使用了$h=8$个注意力头，每个头的维度$d_k=d_v=d_{model}/h=64$，其中$d_{model}=512$是模型的总维度。</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 多头注意力的优势 -->
+                            <div class="bg-primary bg-opacity-10 p-5 rounded-xl">
+                                <h4 class="text-lg font-semibold mb-3 text-primary">多头机制的优势</h4>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-white p-3 rounded-lg">
+                                        <div class="text-primary text-xl mb-2 text-center">
+                                            <i class="fa fa-search"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1 text-center">扩展关注能力</h5>
+                                        <p class="text-sm text-neutral text-center">不同的头可以学习到不同类型的依赖关系（如句法关系、语义关系等）</p>
+                                    </div>
+                                    
+                                    <div class="bg-white p-3 rounded-lg">
+                                        <div class="text-primary text-xl mb-2 text-center">
+                                            <i class="fa fa-cubes"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1 text-center">增强表示能力</h5>
+                                        <p class="text-sm text-neutral text-center">每个头在降维子空间计算，拼接后通过线性变换融合信息，表达能力更强</p>
+                                    </div>
+                                    
+                                    <div class="bg-white p-3 rounded-lg">
+                                        <div class="text-primary text-xl mb-2 text-center">
+                                            <i class="fa fa-shield"></i>
+                                        </div>
+                                        <h5 class="font-semibold mb-1 text-center">提高鲁棒性</h5>
+                                        <p class="text-sm text-neutral text-center">多头机制提供多个"表示子空间"，使模型能从不同角度理解输入序列</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 4.4 自注意力机制的优势与应用 -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-4 text-primary">4.4 自注意力机制的优势与应用</h3>
+                            
+                            <p class="mb-4">相比传统的RNN/LSTM架构，自注意力机制具有以下显著优势：</p>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <!-- 并行计算能力 -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-tasks mr-2"></i>
+                                        <h4 class="font-semibold">并行计算能力</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">RNN每一步的输出都依赖前一步，导致必须顺序执行；而Transformer使用自注意力机制，所有位置可以同时计算注意力，实现完全并行，训练速度比RNN快10倍以上。</p>
+                                </div>
+                                
+                                <!-- 长距离依赖建模 -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-link mr-2"></i>
+                                        <h4 class="font-semibold">长距离依赖建模</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">传统RNN/LSTM通过隐藏状态传递信息，在长文本中容易遗忘开头的信息；而自注意力机制允许序列中任意两个位置直接交互，距离为$O(1)$，能够更好地捕捉长距离依赖关系。</p>
+                                </div>
+                                
+                                <!-- 可解释性 -->
+                                <div class="bg-light p-4 rounded-lg">
+                                    <div class="text-primary text-xl mb-2 flex items-center">
+                                        <i class="fa fa-eye mr-2"></i>
+                                        <h4 class="font-semibold">可解释性</h4>
+                                    </div>
+                                    <p class="text-sm text-neutral">自注意力机制为每个位置的输出分配权重，这些权重表明了输入序列中不同位置对输出的贡献，使模型具有更好的可解释性。</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 自注意力机制的应用 -->
+                            <div class="bg-white border border-gray-200 p-5 rounded-xl shadow-sm mb-6">
+                                <h4 class="text-lg font-semibold mb-4 text-primary">自注意力机制的实际应用</h4>
+                                
+                                <div class="space-y-4">
+                                    <!-- BERT中的应用 -->
+                                    <div>
+                                        <h5 class="font-medium mb-2">在BERT中的应用</h5>
+                                        <p class="text-neutral mb-2">BERT（Bidirectional Encoder Representations from Transformers）是基于Transformer编码器堆叠而成的预训练模型。</p>
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <p class="text-sm text-neutral italic">示例：在处理句子"The movie was not bad, it was actually great."时，自注意力机制能够捕捉"bad"与"not"之间的否定关系，以及与"great"之间的对比关系，从而正确理解"not bad"的正面含义。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- GPT中的应用 -->
+                                    <div>
+                                        <h5 class="font-medium mb-2">在GPT中的应用</h5>
+                                        <p class="text-neutral mb-2">GPT（Generative Pre-trained Transformer）系列模型基于Transformer解码器构建，采用<strong>掩码自注意力（Masked Self-Attention）</strong>技术。</p>
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <p class="text-sm text-neutral italic">示例：在文本续写任务中，如给定前文"The best thing about AI is its"，模型能够基于历史信息生成"ability"或"potential"等合理词汇。</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 计算机视觉中的应用 -->
+                                    <div>
+                                        <h5 class="font-medium mb-2">在计算机视觉中的应用</h5>
+                                        <p class="text-neutral mb-2">Vision Transformer（ViT）将图像分割成固定大小的块，将这些块作为序列输入到Transformer编码器中。</p>
+                                        <div class="bg-light p-3 rounded-lg">
+                                            <p class="text-sm text-neutral italic">示例：通过自注意力机制计算图像块之间的关系，模型能够识别出图像内容，如区分猫的头部、身体、尾巴等部位。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 其他部分由于篇幅限制，这里只展示了前五个主要章节 -->
+        <!-- 实际应用中可以按照相同的模式继续添加剩余章节 -->
+
+        <!-- 回到顶部按钮 -->
+        <button id="backToTop" class="fixed bottom-8 right-8 bg-primary text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 invisible transition-all duration-300">
+            <i class="fa fa-arrow-up"></i>
+        </button>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                    <div class="flex items-center mb-4 md:mb-0">
+                        <i class="fa fa-microchip text-primary text-2xl mr-2"></i>
+                        <h2 class="text-xl font-bold">AI技术核心解析报告</h2>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-file-pdf-o text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-share-alt text-xl"></i>
+                        </a>
+                        <a href="#" class="text-white hover:text-primary transition-colors">
+                            <i class="fa fa-print text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-700 pt-8">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">关于报告</h3>
+                            <p class="text-gray-400 text-sm">本报告旨在为体制内高层领导和技术团队提供一份全面、深入的AI技术解读，帮助受众全面理解AI技术的原理、价值和应用前景。</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">快速导航</h3>
+                            <ul class="space-y-2 text-gray-400 text-sm">
+                                <li><a href="#overview" class="hover:text-primary transition-colors">项目概况</a></li>
+                                <li><a href="#infrastructure" class="hover:text-primary transition-colors">算力基础</a></li>
+                                <li><a href="#nvidia" class="hover:text-primary transition-colors">英伟达分析</a></li>
+                                <li><a href="#gpu" class="hover:text-primary transition-colors">算力卡逻辑</a></li>
+                                <li><a href="#attention" class="hover:text-primary transition-colors">注意力机制</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">联系我们</h3>
+                            <ul class="space-y-2 text-gray-400 text-sm">
+                                <li class="flex items-start">
+                                    <i class="fa fa-envelope-o mr-2 mt-1"></i>
+                                    <span>contact@aitechreport.com</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-phone mr-2 mt-1"></i>
+                                    <span>400-123-4567</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-map-marker mr-2 mt-1"></i>
+                                    <span>北京市海淀区中关村科技园区</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                        <p>© 2025 AI技术研究中心. 保留所有权利.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 移动端菜单切换
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                // 关闭移动端菜单
+                document.getElementById('mobileMenu').classList.add('hidden');
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // 回到顶部按钮
+        const backToTopBtn = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.remove('opacity-0', 'invisible');
+                backToTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopBtn.classList.remove('opacity-100', 'visible');
+                backToTopBtn.classList.add('opacity-0', 'invisible');
+            }
+            
+            // 导航栏滚动效果
+            const header = document.querySelector('header');
+            if (window.pageYOffset > 100) {
+                header.classList.add('shadow-lg');
+                header.classList.remove('shadow-md');
+            } else {
+                header.classList.remove('shadow-lg');
+                header.classList.add('shadow-md');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 图表初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 全球AI芯片市场份额图表
+            const globalAiChipCtx = document.getElementById('globalAiChipChart').getContext('2d');
+            new Chart(globalAiChipCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['英伟达', 'AMD', '英特尔', '其他'],
+                    datasets: [{
+                        data: [95, 2, 2, 1],
+                        backgroundColor: [
+                            '#165DFF',
+                            '#36CFFB',
+                            '#722ED1',
+                            '#86909C'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+            
+            // 中国AI芯片市场份额图表
+            const chinaAiChipCtx = document.getElementById('chinaAiChipChart').getContext('2d');
+            new Chart(chinaAiChipCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['英伟达', '华为', '海光信息', '寒武纪', '其他'],
+                    datasets: [{
+                        data: [83.2, 14.6, 1.4, 0.8, 0],
+                        backgroundColor: [
+                            '#165DFF',
+                            '#36CFFB',
+                            '#722ED1',
+                            '#F7BA1E',
+                            '#86909C'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+            
+            // 英伟达市值增长图表
+            const nvidiaMarketCapCtx = document.getElementById('nvidiaMarketCapChart').getContext('2d');
+            new Chart(nvidiaMarketCapCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1999', '2006', '2012', '2018', '2022', '2024'],
+                    datasets: [{
+                        label: '市值 (十亿美元)',
+                        data: [2, 15, 100, 150, 1000, 3000],
+                        borderColor: '#165DFF',
+                        backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#165DFF',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `市值: ${context.raw}十亿美元`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '市值 (十亿美元)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '年份'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // CPU与GPU芯片面积分配对比图表
+            const cpuGpuAreaCtx = document.getElementById('cpuGpuAreaChart').getContext('2d');
+            new Chart(cpuGpuAreaCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['计算单元 (ALU)', '缓存', '控制单元', '其他'],
+                    datasets: [
+                        {
+                            label: 'CPU',
+                            data: [20, 35, 30, 15],
+                            backgroundColor: '#36CFFB',
+                        },
+                        {
+                            label: 'GPU',
+                            data: [80, 10, 5, 5],
+                            backgroundColor: '#165DFF',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '芯片面积占比 (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '组件类型'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
