@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6.3 部署框架与工具生态</title>
+    <style>
+
+:root {
+    --bg-base: #040915;
+    --bg-panel: rgba(12, 20, 46, 0.92);
+    --bg-panel-strong: rgba(18, 30, 68, 0.92);
+    --primary: #165DFF;
+    --accent: #36CFFB;
+    --accent-secondary: #4F6BFF;
+    --text-main: #F5F8FF;
+    --text-subtle: #A7B8FF;
+    --divider: rgba(105, 128, 255, 0.35);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Microsoft YaHei', 'Source Han Sans SC', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg-base);
+    color: var(--text-main);
+    letter-spacing: 0.03em;
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 24px;
+    --scale: 1;
+}
+
+.scale-wrapper {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: top left;
+    transform: scale(var(--scale));
+}
+
+@media (max-width: 1920px), (max-height: 1080px) {
+    body {
+        --scale: min(calc(100vw / 1920), calc(100vh / 1080));
+    }
+}
+
+.stage {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    background:
+        radial-gradient(circle at 18% 18%, rgba(54, 207, 251, 0.25), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(22, 93, 255, 0.22), transparent 55%),
+        linear-gradient(135deg, rgba(6, 12, 33, 0.96) 0%, rgba(10, 16, 38, 0.96) 100%);
+    border-radius: 32px;
+    padding: 120px 140px 130px;
+    box-shadow: 0 50px 120px rgba(0, 0, 0, 0.55);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.stage::before {
+    content: "";
+    position: absolute;
+    inset: 60px;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(22, 93, 255, 0.12), transparent 55%);
+    mix-blend-mode: screen;
+    opacity: 0.9;
+    pointer-events: none;
+}
+
+.header {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 48px;
+}
+
+.kicker {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    margin: 0 0 16px;
+}
+
+.title {
+    font-size: 68px;
+    font-weight: 700;
+    line-height: 1.12;
+    margin: 0;
+    color: var(--text-main);
+    text-shadow: 0 18px 38px rgba(22, 93, 255, 0.35);
+}
+
+.subtitle {
+    margin-top: 18px;
+    font-size: 28px;
+    color: var(--text-subtle);
+    font-weight: 400;
+}
+
+.body {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.body ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.body li {
+    position: relative;
+    font-size: 32px;
+    line-height: 1.55;
+    color: var(--text-main);
+    padding-left: 40px;
+}
+
+.body li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 18px rgba(54, 207, 251, 0.6);
+}
+
+.body li strong {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.layout-cover .stage {
+    padding: 160px 180px 160px;
+}
+
+.layout-cover .header {
+    margin-bottom: 32px;
+}
+
+.layout-cover .title {
+    font-size: 92px;
+    line-height: 1.05;
+}
+
+.layout-cover .body ul {
+    gap: 22px;
+}
+
+.layout-agenda .body li {
+    font-size: 30px;
+}
+
+.layout-section-intro .body li {
+    font-size: 30px;
+}
+
+.footer {
+    position: relative;
+    z-index: 2;
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.page-indicator {
+    position: absolute;
+    right: 150px;
+    bottom: 90px;
+    font-size: 26px;
+    color: var(--text-subtle);
+    letter-spacing: 0.12em;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(15, 26, 56, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 0 1px rgba(54, 207, 251, 0.18);
+}
+
+.progress-track {
+    position: absolute;
+    left: 150px;
+    right: 150px;
+    bottom: 100px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    box-shadow: 0 0 15px rgba(54, 207, 251, 0.45);
+    transition: width 0.4s ease;
+}
+
+    </style>
+</head>
+<body class="layout-content">
+    <div class="scale-wrapper">
+        <div class="stage">
+            <header class="header">
+                <p class="kicker">六、大模型部署技术体系</p>
+                <h1 class="title">6.3 部署框架与工具生态</h1>
+                
+            </header>
+            <main class="body">
+                <ul>
+<li>大模型部署需要使用专业的框架和工具，主要包括：</li>
+<li>TensorRT：</li>
+<li>TensorRT 是 NVIDIA 开发的高性能推理优化器，专门用于优化和部署深度学习模型。</li>
+<li>TensorRT 支持多种输入格式，其中ONNX（开放神经网络交换格式）是最通用的选择。</li>
+<li>TensorRT 的优势：</li>
+<li>支持 FP32、FP16、INT8 等多种精度</li>
+</ul>
+            </main>
+            <footer class="footer"></footer>
+            <div class="progress-track"><div class="progress-bar"></div></div>
+            <div class="page-indicator"></div>
+        </div>
+    </div>
+    <script src="../navigation.js"></script>
+</body>
+</html>
