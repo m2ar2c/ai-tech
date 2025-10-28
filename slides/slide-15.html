@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 技术核心解析报告 - 幻灯片 15</title>
+    <style>
+        :root { color-scheme: light; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 20%, #16213E 0%, #0F172A 45%, #020617 100%);
+            font-family: 'HarmonyOS Sans SC', 'PingFang SC', 'Microsoft YaHei', 'Source Han Sans SC', sans-serif;
+            color: #1D2939;
+        }
+        .slide {
+            width: 1280px;
+            height: 720px;
+            background: #FFFFFF;
+            border-radius: 32px;
+            position: relative;
+            padding: 96px 112px 120px 112px;
+            box-shadow: 0 32px 120px rgba(15, 23, 42, 0.45);
+            overflow: hidden;
+        }
+        .slide.cover {
+            background: linear-gradient(140deg, #165DFF 0%, #36CFFB 55%, #5AD7F7 100%);
+            color: #FFFFFF;
+        }
+        .slide.cover .badge {
+            background: rgba(255, 255, 255, 0.18);
+            color: #FFFFFF;
+        }
+        .slide.cover .slide-title {
+            color: #FFFFFF;
+            font-size: 64px;
+        }
+        .slide.cover .slide-subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 28px;
+        }
+        .slide.cover .content ul li {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        .badge {
+            position: absolute;
+            top: 36px;
+            left: 48px;
+            padding: 6px 18px;
+            border-radius: 999px;
+            background: rgba(22, 93, 255, 0.12);
+            color: #165DFF;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .slide-title {
+            margin: 0;
+            font-size: 46px;
+            line-height: 1.2;
+            color: #101828;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+        .slide-subtitle {
+            margin: 18px 0 48px 0;
+            font-size: 24px;
+            line-height: 1.6;
+            color: #475467;
+            max-width: 780px;
+        }
+        .content {
+            font-size: 24px;
+            line-height: 1.6;
+            color: #1D2939;
+        }
+        .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .content li {
+            margin-bottom: 20px;
+            position: relative;
+            padding-left: 28px;
+        }
+        .content li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #165DFF;
+            box-shadow: 0 0 0 5px rgba(22, 93, 255, 0.2);
+        }
+        .slide.cover .content li::before {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+        .nav-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 56px;
+            font-size: 18px;
+            color: #98A2B3;
+            letter-spacing: 0.02em;
+        }
+        .slide.cover .nav-hint {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .page-number {
+            position: absolute;
+            bottom: 40px;
+            right: 56px;
+            font-size: 20px;
+            color: #98A2B3;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+        }
+        .slide.cover .page-number {
+            color: rgba(255, 255, 255, 0.75);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide" data-slide="15">
+            <div class="badge">四、大模型自注意力学习机制</div>
+            <h1 class="slide-title">4.3 多头自注意力机制</h1>
+            <div class="content">
+                <ul>
+                <li>为了增强模型的表示能力，Transformer 采用了多头自注意力（Multi-Head Attention）机制</li>
+                <li>多头机制不是执行单次注意力计算，而是将查询、键和值通过不同的线性变换投影$h$次（即$h$个 "头"），并行地执行$h$次注意力计算，然后将结果拼接并再次进行线性变换</li>
+                <li>多头注意力的计算过程如下：对于第$i$个头、计算：$\text{head}_i = \text{Attention}(QW_i^Q、KW_i^K、VW_i^V)$</li>
+                <li>将$h$个头的输出拼接起来：$\text{Concat}(\text{head}_1、\dots、\text{head}_h)$</li>
+                <li>通过最终的线性变换得到输出：$\text{MultiHead}(Q、K、V) = \text{Concat}(\text{head}_1、\dots</li>
+                </ul>
+            </div>
+            <div class="nav-hint">使用 ← → 键切换</div>
+            <div class="page-number"></div>
+    </div>
+    <script src="navigation.js"></script>
+</body>
+</html>
