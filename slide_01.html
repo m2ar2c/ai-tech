@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻灯片 01 - AI 深度研究报告</title>
+    <style>
+        :root {
+            --primary: #165DFF;
+            --secondary: #36CFFB;
+            --accent: #722ED1;
+            --bg: #050A1F;
+            --surface: rgba(12, 20, 46, 0.7);
+            --text-main: #F7FAFF;
+            --text-secondary: #B8C7E6;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            --scale: min(calc(100vw / 1280), calc(100vh / 720));
+        }
+
+        .scale-wrapper {
+            width: 1280px;
+            height: 720px;
+            transform: scale(var(--scale));
+            transform-origin: center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 1280px;
+            height: 720px;
+            background: radial-gradient(circle at 20% 20%, rgba(22, 93, 255, 0.48), transparent 45%),
+                radial-gradient(circle at 80% 15%, rgba(114, 46, 209, 0.4), transparent 50%),
+                linear-gradient(135deg, #081132 0%, #111C3F 50%, #080E2A 100%);
+            border-radius: 28px;
+            padding: 72px 96px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            isolation: isolate;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(22, 93, 255, 0.12), rgba(9, 18, 52, 0.6));
+            mix-blend-mode: screen;
+            z-index: -1;
+        }
+
+        .slide::after {
+            content: "";
+            position: absolute;
+            inset: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 22px;
+            pointer-events: none;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 56px;
+        }
+
+        header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            background: rgba(22, 93, 255, 0.16);
+            border: 1px solid rgba(22, 93, 255, 0.28);
+            border-radius: 999px;
+            font-size: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        header .badge svg {
+            width: 26px;
+            height: 26px;
+            fill: var(--secondary);
+        }
+
+        header .meta {
+            text-align: right;
+            color: var(--text-secondary);
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            flex: 1;
+        }
+
+        h1 {
+            font-size: 64px;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 32px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .highlights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .highlight-card {
+            background: rgba(8, 17, 50, 0.78);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 28px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .highlight-card h3 {
+            margin: 0;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .highlight-card p {
+            margin: 0;
+            font-size: 20px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 32px;
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        .page-number {
+            font-size: 20px;
+            color: var(--secondary);
+            letter-spacing: 1px;
+        }
+
+        .decor-line {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(54, 207, 251, 0.08) 45%, transparent 90%);
+            opacity: 0.6;
+            mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.6), transparent 70%);
+            z-index: -2;
+        }
+    </style>
+</head>
+<body>
+    <div class="scale-wrapper">
+        <article class="slide" role="article" aria-label="AI 深度研究报告封面">
+            <div class="decor-line" aria-hidden="true"></div>
+            <header>
+                <div class="badge" aria-label="项目类型">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                        <path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8Zm3.293-10.707-4 4a1 1 0 0 1-1.414 0l-2-2 1.414-1.414L10 11.586l3.293-3.293Z" />
+                    </svg>
+                    AI STRATEGY BRIEFING
+                </div>
+                <div class="meta">
+                    <div>体制内高层领导专项汇报</div>
+                    <div>政策决策与技术部署双视角</div>
+                    <div>2024 · 国家级智算专题</div>
+                </div>
+            </header>
+            <main>
+                <section>
+                    <h1>AI 深度研究报告</h1>
+                    <h2>算力基础 · 模型机制 · 智能体应用全景洞察</h2>
+                </section>
+                <section class="highlights" aria-label="核心亮点">
+                    <div class="highlight-card">
+                        <h3>战略定位</h3>
+                        <p>解构英伟达算力生态、全球 AI 芯片格局及其对国家智算体系的启示。</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3>技术剖析</h3>
+                        <p>深入拆解大模型自注意力、训练部署体系与机器学习底层逻辑。</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3>行动建议</h3>
+                        <p>面向政策制定与工程实施，提供智能体落地的路径与操作框架。</p>
+                    </div>
+                </section>
+            </main>
+            <footer>
+                <div>报告撰写：数字政府创新实验室｜数据智能中心</div>
+                <div class="page-number" aria-live="polite"></div>
+            </footer>
+        </article>
+    </div>
+    <script src="navigation.js"></script>
+</body>
+</html>

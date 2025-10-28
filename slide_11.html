@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幻灯片 11 - 部署训练与知识体系</title>
+    <style>
+        :root {
+            --primary: #165DFF;
+            --secondary: #36CFFB;
+            --accent: #722ED1;
+            --bg: #040A1D;
+            --surface: rgba(8, 20, 52, 0.8);
+            --text-main: #F4F8FF;
+            --text-secondary: #A5B8DC;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Microsoft YaHei', 'Noto Sans SC', 'PingFang SC', sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            --scale: min(calc(100vw / 1280), calc(100vh / 720));
+        }
+
+        .scale-wrapper {
+            width: 1280px;
+            height: 720px;
+            transform: scale(var(--scale));
+            transform-origin: center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            width: 1280px;
+            height: 720px;
+            border-radius: 28px;
+            padding: 68px 84px;
+            background: linear-gradient(140deg, rgba(8, 18, 45, 0.96) 0%, rgba(14, 34, 78, 0.92) 52%, rgba(6, 16, 36, 0.95) 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide::before {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+        }
+
+        header {
+            margin-bottom: 36px;
+        }
+
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 46px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 22px;
+            color: var(--text-secondary);
+            max-width: 760px;
+            line-height: 1.6;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .stage-card {
+            background: var(--surface);
+            border-radius: 22px;
+            border: 1px solid var(--border);
+            padding: 26px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            backdrop-filter: blur(14px);
+            position: relative;
+        }
+
+        .stage-card::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -18px;
+            width: 32px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(54, 207, 251, 0.4), rgba(22, 93, 255, 0.6));
+        }
+
+        .stage-card:last-child::after {
+            display: none;
+        }
+
+        .stage-card header {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stage-card h2 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .stage-card span {
+            font-size: 16px;
+            color: var(--secondary);
+            letter-spacing: 1px;
+        }
+
+        .stage-card ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stage-card li {
+            font-size: 18px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .stage-card li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        }
+
+        .stage-metric {
+            background: rgba(6, 16, 36, 0.65);
+            border-radius: 16px;
+            border: 1px solid rgba(54, 207, 251, 0.22);
+            padding: 12px 14px;
+            font-size: 16px;
+            color: var(--secondary);
+        }
+
+        footer {
+            margin-top: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        .page-number {
+            font-size: 20px;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="scale-wrapper">
+        <article class="slide" role="article" aria-label="部署训练与知识体系">
+            <header>
+                <h1>大模型部署·训练·知识体系闭环</h1>
+                <p>构建从训练集群、模型压缩到知识库构建与智能体编排的标准流程，保障可持续迭代。</p>
+            </header>
+            <main>
+                <section class="stage-card" aria-label="训练策略">
+                    <header>
+                        <span>TRAINING</span>
+                        <h2>大模型训练</h2>
+                    </header>
+                    <ul>
+                        <li>数据治理：清洗、去重、标注与多模态融合，构建高质量语料池。</li>
+                        <li>分布式训练：Megatron-LM、DeepSpeed 混合并行策略提升吞吐。</li>
+                        <li>优化策略：使用 AdamW、FSDP、梯度检查点降低显存压力。</li>
+                    </ul>
+                    <div class="stage-metric">指标：收敛速度↑、GPU 利用率↑、成本↓</div>
+                </section>
+                <section class="stage-card" aria-label="知识蒸馏">
+                    <header>
+                        <span>DISTILLATION</span>
+                        <h2>模型蒸馏与压缩</h2>
+                    </header>
+                    <ul>
+                        <li>教师-学生框架：提取 logits 与 attention map，提升学生模型泛化。</li>
+                        <li>量化方案：INT8/FP8/FP4，自适应量化保持精度。</li>
+                        <li>剪枝与结构化稀疏：聚焦关键通道，降低推理延迟。</li>
+                    </ul>
+                    <div class="stage-metric">目标：模型尺寸↓、推理延迟↓</div>
+                </section>
+                <section class="stage-card" aria-label="知识库构建">
+                    <header>
+                        <span>KNOWLEDGE</span>
+                        <h2>知识库与检索增强</h2>
+                    </header>
+                    <ul>
+                        <li>企业文档、法规、行业案例结构化入库，构建多源知识图谱。</li>
+                        <li>采用向量数据库 + BM25 混合检索，确保精确召回。</li>
+                        <li>内置权限控制与溯源机制，保证知识可信与可解释。</li>
+                    </ul>
+                    <div class="stage-metric">价值：回答准确率↑、可追踪性↑</div>
+                </section>
+                <section class="stage-card" aria-label="部署运维与智能体">
+                    <header>
+                        <span>DEPLOY & AGENT</span>
+                        <h2>部署运维与智能体</h2>
+                    </header>
+                    <ul>
+                        <li>推理引擎：TensorRT、ONNX Runtime、vLLM 构建弹性推理服务。</li>
+                        <li>MLOps：灰度发布、A/B 测试、指标监控与自动回滚。</li>
+                        <li>智能体编排：基于工具调用与工作流编排，支撑多角色协同。</li>
+                    </ul>
+                    <div class="stage-metric">保障：SLA 稳定、场景扩展快</div>
+                </section>
+            </main>
+            <footer>
+                <div>结论：形成“训练→压缩→知识→部署→智能体”闭环，支撑行业级 AI 服务持续演化。</div>
+                <div class="page-number" aria-live="polite"></div>
+            </footer>
+        </article>
+    </div>
+    <script src="navigation.js"></script>
+</body>
+</html>
