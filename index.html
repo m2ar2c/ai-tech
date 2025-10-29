@@ -1,0 +1,2099 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI深度研究报告 - 演示文稿</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000000;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Scroll snap container */
+        .slides-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+        
+        /* Individual slide - 16:9 aspect ratio */
+        .slide {
+            min-height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        /* 16:9 content container */
+        .slide-content {
+            width: 100%;
+            max-width: 1600px;
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+        }
+        
+        /* Brand color - NVIDIA Green */
+        :root {
+            --brand-color: #76B900;
+            --brand-color-rgb: 118, 185, 0;
+        }
+        
+        .text-brand {
+            color: var(--brand-color);
+        }
+        
+        .bg-brand {
+            background-color: var(--brand-color);
+        }
+        
+        .border-brand {
+            border-color: var(--brand-color);
+        }
+        
+        /* Tech gradient */
+        .tech-gradient {
+            background: linear-gradient(135deg, 
+                rgba(var(--brand-color-rgb), 0.7) 0%, 
+                rgba(var(--brand-color-rgb), 0.3) 100%);
+        }
+        
+        /* Card styles */
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-color);
+            box-shadow: 0 10px 30px rgba(var(--brand-color-rgb), 0.3);
+        }
+        
+        .mini-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .mini-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--brand-color);
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 1rem;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border: 1px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #222;
+        }
+        
+        .modal-close:hover {
+            border-color: var(--brand-color);
+            background: var(--brand-color);
+            color: #000;
+        }
+        
+        /* Animation */
+        .slide-content > * {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slide-content > *:nth-child(1) { animation-delay: 0.1s; }
+        .slide-content > *:nth-child(2) { animation-delay: 0.2s; }
+        .slide-content > *:nth-child(3) { animation-delay: 0.3s; }
+        .slide-content > *:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide-content {
+                aspect-ratio: auto;
+                min-height: 90vh;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .slide-content {
+                padding: 2rem 1rem;
+            }
+        }
+        
+        /* Scrollbar */
+        .slides-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .slides-container::-webkit-scrollbar-track {
+            background: #111;
+        }
+        
+        .slides-container::-webkit-scrollbar-thumb {
+            background: var(--brand-color);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slides-container">
+    
+    <!-- Slide 1: Cover -->
+    <div class="slide">
+        <div class="slide-content items-center text-center">
+            <div class="tech-gradient rounded-2xl p-8 mb-8">
+                <i class="fas fa-brain text-6xl text-white mb-6"></i>
+                <h1 class="text-7xl font-bold text-white mb-4">AI深度研究报告</h1>
+                <p class="text-2xl text-gray-300">Artificial Intelligence Deep Research Report</p>
+            </div>
+            <p class="text-xl text-gray-400">算力基础设施 · 核心技术解析 · 应用前景展望</p>
+        </div>
+    </div>
+    
+    <!-- Slide 2: Project Overview -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-flag-checkered text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">项目概况与目标</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="mini-card">
+                    <div class="text-5xl font-bold text-brand mb-3">9</div>
+                    <div class="text-sm text-gray-400">九大核心技术主题</div>
+                    <div class="text-xs text-gray-500 mt-2">算力卡、大模型、训练部署等</div>
+                </div>
+                
+                <div class="mini-card">
+                    <div class="text-3xl font-bold text-white mb-3">战略认知</div>
+                    <div class="text-sm text-gray-400">为高层领导提供框架</div>
+                    <div class="text-xs text-gray-500 mt-2">制定政策和投资决策</div>
+                </div>
+                
+                <div class="mini-card">
+                    <div class="text-3xl font-bold text-white mb-3">技术指导</div>
+                    <div class="text-sm text-gray-400">为技术团队提供原理</div>
+                    <div class="text-xs text-gray-500 mt-2">AI项目规划与实施</div>
+                </div>
+            </div>
+            
+            <div class="mt-8 card">
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    <i class="fas fa-quote-left text-brand mr-2"></i>
+                    在人工智能技术快速发展的今天，<span class="text-brand font-bold">AI知识普及</span>已成为政府部门和企事业单位面临的重要课题。本报告围绕英伟达算力、自注意力机制、模型训练部署、知识蒸馏、智能体开发等展开深入分析，帮助受众全面理解AI技术的原理、价值和应用前景。
+                    <i class="fas fa-quote-right text-brand ml-2"></i>
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 3: AI Development Background -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-history text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">AI技术发展背景</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-lightbulb text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold">技术突破</h3>
+                    </div>
+                    <div class="space-y-3 text-gray-300">
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span><span class="text-brand font-bold">2017年</span> Transformer架构提出，改变AI训练方式</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span>深度学习使机器具备强大的<span class="text-white font-bold">模式识别</span>能力</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span>大语言模型将AI推向新高度</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-rocket text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold">应用突破</h3>
+                    </div>
+                    <div class="space-y-3 text-gray-300">
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span>自然语言处理：GPT-4、Claude等</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span>计算机视觉：图像识别与生成</span>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-brand mr-2">•</span>
+                            <span>智能决策：复杂场景推理能力</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="showModal('modal-transformer')" class="px-6 py-3 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    <i class="fas fa-info-circle mr-2"></i>了解Transformer详情
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 4: AI Chip Market -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-chart-pie text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">全球AI芯片市场格局</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="mini-card text-center">
+                    <div class="text-5xl font-bold text-brand mb-2">$2700亿</div>
+                    <div class="text-sm text-gray-400">2024年全球市场规模</div>
+                    <div class="text-xs text-gray-500 mt-1">AI Chip Market Size</div>
+                </div>
+                
+                <div class="mini-card text-center">
+                    <div class="text-5xl font-bold text-brand mb-2">92-97%</div>
+                    <div class="text-sm text-gray-400">英伟达全球市占率</div>
+                    <div class="text-xs text-gray-500 mt-1">Global Market Share</div>
+                </div>
+                
+                <div class="mini-card text-center">
+                    <div class="text-5xl font-bold text-brand mb-2">98%</div>
+                    <div class="text-sm text-gray-400">数据中心GPU份额</div>
+                    <div class="text-xs text-gray-500 mt-1">Data Center Dominance</div>
+                </div>
+                
+                <div class="mini-card text-center">
+                    <div class="text-5xl font-bold text-brand mb-2">376万</div>
+                    <div class="text-sm text-gray-400">2023年出货量（台）</div>
+                    <div class="text-xs text-gray-500 mt-1">Annual Shipment</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="text-2xl font-bold mb-4 text-white">中国市场变化趋势</h3>
+                <canvas id="chinaMarketChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 5: NVIDIA History -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-timeline text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">英伟达发展历程</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="mini-card">
+                    <div class="text-4xl font-bold text-brand mb-2">1993</div>
+                    <div class="text-lg font-bold text-white mb-2">公司成立</div>
+                    <div class="text-sm text-gray-400">黄仁勋等三人创立</div>
+                    <div class="text-xs text-gray-500 mt-1">Foundation</div>
+                </div>
+                
+                <div class="mini-card">
+                    <div class="text-4xl font-bold text-brand mb-2">1999</div>
+                    <div class="text-lg font-bold text-white mb-2">重要转折</div>
+                    <div class="text-sm text-gray-400">GeForce 256首次定义GPU</div>
+                    <div class="text-xs text-gray-500 mt-1">GPU Concept</div>
+                </div>
+                
+                <div class="mini-card">
+                    <div class="text-4xl font-bold text-brand mb-2">2006</div>
+                    <div class="text-lg font-bold text-white mb-2">CUDA架构</div>
+                    <div class="text-sm text-gray-400">开启高性能计算新纪元</div>
+                    <div class="text-xs text-gray-500 mt-1">HPC Revolution</div>
+                </div>
+                
+                <div class="mini-card">
+                    <div class="text-4xl font-bold text-brand mb-2">2024</div>
+                    <div class="text-lg font-bold text-white mb-2">市值巅峰</div>
+                    <div class="text-sm text-gray-400">突破3万亿美元</div>
+                    <div class="text-xs text-gray-500 mt-1">Market Cap Peak</div>
+                </div>
+            </div>
+            
+            <div class="mt-6 card">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-lg text-gray-300 mb-2">
+                            <i class="fas fa-bolt text-brand mr-2"></i>
+                            <span class="text-white font-bold">关键发现：</span>GTX480训练神经网络速度是至强CPU的<span class="text-brand font-bold text-2xl mx-2">12倍</span>
+                        </p>
+                        <p class="text-sm text-gray-400">这一发现促使吴恩达在猫脸识别实验中大规模采用GPU集群</p>
+                    </div>
+                    <button onclick="showModal('modal-cuda')" class="px-4 py-2 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all whitespace-nowrap ml-4">
+                        CUDA详情
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 6: NVIDIA's Moat -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-shield-alt text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">英伟达三大护城河</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-microchip text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">技术优势</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">1年</div>
+                            <div class="text-xs text-gray-400">架构更新周期</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">2080亿</div>
+                            <div class="text-xs text-gray-400">B200晶体管数量</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">5倍</div>
+                            <div class="text-xs text-gray-400">B200比H100算力提升</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-globe text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">生态系统</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">600万+</div>
+                            <div class="text-xs text-gray-400">CUDA开发者数量</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">900+</div>
+                            <div class="text-xs text-gray-400">加速库及模型</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">15倍</div>
+                            <div class="text-xs text-gray-400">CUDA-X库性能提升</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-industry text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">供应链</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">台积电</div>
+                            <div class="text-xs text-gray-400">深度绑定先进产能</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">90%</div>
+                            <div class="text-xs text-gray-400">CoWoS封装产能独占</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-3xl font-bold text-brand mb-1">3.35TB/s</div>
+                            <div class="text-xs text-gray-400">先进封装显存带宽</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 7: Latest Products -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-star text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">最新产品技术优势</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card hover:scale-105 transition-transform">
+                    <div class="text-center mb-4">
+                        <h3 class="text-3xl font-bold text-brand">H100</h3>
+                        <p class="text-sm text-gray-400">Hopper Architecture</p>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">显存：</span>
+                            <span class="text-white font-bold">80GB HBM3</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">带宽：</span>
+                            <span class="text-white font-bold">3.35TB/s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">FP16性能：</span>
+                            <span class="text-white font-bold">989.5 Tflops</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card hover:scale-105 transition-transform">
+                    <div class="text-center mb-4">
+                        <h3 class="text-3xl font-bold text-brand">H200</h3>
+                        <p class="text-sm text-gray-400">Enhanced Hopper</p>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">显存：</span>
+                            <span class="text-white font-bold">141GB HBM3e</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">带宽：</span>
+                            <span class="text-white font-bold">4.8TB/s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">吞吐提升：</span>
+                            <span class="text-brand font-bold">15-20%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card hover:scale-105 transition-transform border-brand">
+                    <div class="text-center mb-4">
+                        <h3 class="text-3xl font-bold text-brand">B200</h3>
+                        <p class="text-sm text-gray-400">Blackwell Architecture</p>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">显存：</span>
+                            <span class="text-white font-bold">192GB HBM3e</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">带宽：</span>
+                            <span class="text-brand font-bold">8TB/s</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">AI算力：</span>
+                            <span class="text-brand font-bold">20 PFLOPS</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-700 text-center">
+                        <span class="text-xs text-brand">🏆 双芯片设计 · 第五代NVLink</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 card text-center">
+                <p class="text-lg text-gray-300">
+                    <i class="fas fa-trophy text-brand mr-2"></i>
+                    <span class="text-white font-bold">DGX B200系统：</span>配备8颗B200 GPU，提供<span class="text-brand font-bold text-xl mx-2">144 petaflops</span>AI性能
+                </p>
+                <button onclick="showModal('modal-products')" class="mt-4 px-6 py-2 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    查看完整对比
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 8: GPU vs CPU -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-code-compare text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">GPU与CPU架构对比</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-microchip text-3xl text-blue-400 mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">CPU</h3>
+                        <span class="ml-auto text-xs text-gray-500">Central Processing Unit</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-blue-400 mb-1">4-16</div>
+                            <div class="text-xs text-gray-400">核心数量</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-blue-400 mb-1">通用性</div>
+                            <div class="text-xs text-gray-400">设计目标</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-blue-400 mb-1">低延迟</div>
+                            <div class="text-xs text-gray-400">性能特点</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-blue-400 mb-1">复杂逻辑</div>
+                            <div class="text-xs text-gray-400">适用场景</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <p>擅长串行处理、任务调度和复杂逻辑判断</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-microchip text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">GPU</h3>
+                        <span class="ml-auto text-xs text-gray-500">Graphics Processing Unit</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-brand mb-1">数千</div>
+                            <div class="text-xs text-gray-400">核心数量</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-brand mb-1">并行计算</div>
+                            <div class="text-xs text-gray-400">设计目标</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-brand mb-1">高吞吐</div>
+                            <div class="text-xs text-gray-400">性能特点</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-2xl font-bold text-brand mb-1">矩阵运算</div>
+                            <div class="text-xs text-gray-400">适用场景</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        <p>擅长大规模并行任务、深度学习和图像处理</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 card tech-gradient">
+                <div class="text-center">
+                    <p class="text-xl font-bold text-white mb-2">
+                        <i class="fas fa-bolt mr-2"></i>GPU将80%以上芯片面积用于ALU，而CPU则更多用于缓存和控制
+                    </p>
+                    <button onclick="showModal('modal-gpu-arch')" class="mt-2 px-6 py-2 bg-black text-brand font-bold rounded-lg hover:bg-gray-900 transition-all">
+                        深入了解GPU架构
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 9: Machine Learning Types -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-brain text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">机器学习三大分类</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-graduation-cap text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">监督学习</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">Supervised Learning</p>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">分类任务</div>
+                            <div class="text-xs text-gray-400">垃圾邮件检测、图像识别</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">回归任务</div>
+                            <div class="text-xs text-gray-400">房价预测、股票预测</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        使用带标签数据训练，学习输入输出映射关系
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-search text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">无监督学习</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">Unsupervised Learning</p>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">聚类</div>
+                            <div class="text-xs text-gray-400">客户细分、图像分割</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">降维</div>
+                            <div class="text-xs text-gray-400">PCA、t-SNE特征提取</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        无需标签，自主发现数据内在结构和规律
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-gamepad text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">强化学习</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-4">Reinforcement Learning</p>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">游戏AI</div>
+                            <div class="text-xs text-gray-400">AlphaGo、AlphaStar</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="text-lg font-bold text-white mb-1">机器人控制</div>
+                            <div class="text-xs text-gray-400">路径规划、物体抓取</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        通过与环境交互学习最优策略，最大化累积奖励
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="showModal('modal-ml-details')" class="px-6 py-3 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    <i class="fas fa-book mr-2"></i>查看详细算法说明
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 10: Deep Learning -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-project-diagram text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">深度学习核心原理</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-white mb-4">神经网络结构</h3>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900 flex items-center">
+                            <div class="text-3xl text-brand mr-3">1</div>
+                            <div>
+                                <div class="font-bold text-white">输入层</div>
+                                <div class="text-xs text-gray-400">接收原始数据</div>
+                            </div>
+                        </div>
+                        <div class="mini-card bg-gray-900 flex items-center">
+                            <div class="text-3xl text-brand mr-3">N</div>
+                            <div>
+                                <div class="font-bold text-white">隐藏层</div>
+                                <div class="text-xs text-gray-400">特征提取与变换</div>
+                            </div>
+                        </div>
+                        <div class="mini-card bg-gray-900 flex items-center">
+                            <div class="text-3xl text-brand mr-3">1</div>
+                            <div>
+                                <div class="font-bold text-white">输出层</div>
+                                <div class="text-xs text-gray-400">产生预测结果</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-white mb-4">激活函数</h3>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">ReLU</div>
+                            <div class="text-xs text-gray-400">最常用，计算简单不易梯度消失</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">Sigmoid</div>
+                            <div class="text-xs text-gray-400">二分类输出层，压缩到(0,1)</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">Softmax</div>
+                            <div class="text-xs text-gray-400">多分类，转换为概率分布</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-400">
+                        激活函数引入非线性，使网络能学习复杂关系
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="mini-card text-center">
+                    <i class="fas fa-arrow-right text-2xl text-brand mb-2"></i>
+                    <div class="font-bold text-white">前向传播</div>
+                    <div class="text-xs text-gray-400">数据→隐藏层→输出</div>
+                </div>
+                <div class="mini-card text-center">
+                    <i class="fas fa-arrow-left text-2xl text-brand mb-2"></i>
+                    <div class="font-bold text-white">反向传播</div>
+                    <div class="text-xs text-gray-400">链式法则计算梯度</div>
+                </div>
+                <div class="mini-card text-center">
+                    <i class="fas fa-sync text-2xl text-brand mb-2"></i>
+                    <div class="font-bold text-white">参数更新</div>
+                    <div class="text-xs text-gray-400">梯度下降优化权重</div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="showModal('modal-dl-math')" class="px-6 py-3 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    <i class="fas fa-calculator mr-2"></i>查看数学公式详解
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 11: Self-Attention -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-eye text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">自注意力机制</h2>
+            </div>
+            
+            <div class="card mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center">
+                        <div class="mini-card bg-gray-900 mb-3">
+                            <i class="fas fa-question text-4xl text-brand mb-2"></i>
+                            <div class="text-2xl font-bold text-white">Query</div>
+                            <div class="text-xs text-gray-500 mt-1">查询</div>
+                        </div>
+                        <p class="text-sm text-gray-400">当前元素发出的查询信号</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="mini-card bg-gray-900 mb-3">
+                            <i class="fas fa-key text-4xl text-brand mb-2"></i>
+                            <div class="text-2xl font-bold text-white">Key</div>
+                            <div class="text-xs text-gray-500 mt-1">键</div>
+                        </div>
+                        <p class="text-sm text-gray-400">其他元素提供的标识</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="mini-card bg-gray-900 mb-3">
+                            <i class="fas fa-database text-4xl text-brand mb-2"></i>
+                            <div class="text-2xl font-bold text-white">Value</div>
+                            <div class="text-xs text-gray-500 mt-1">值</div>
+                        </div>
+                        <p class="text-sm text-gray-400">其他元素携带的实际内容</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <h3 class="text-xl font-bold text-brand mb-3">并行计算</h3>
+                    <p class="text-sm text-gray-400">比RNN快<span class="text-brand font-bold text-lg mx-1">10倍+</span></p>
+                    <p class="text-xs text-gray-500 mt-2">所有位置同时计算注意力</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-bold text-brand mb-3">长距离依赖</h3>
+                    <p class="text-sm text-gray-400">距离复杂度<span class="text-brand font-bold text-lg mx-1">O(1)</span></p>
+                    <p class="text-xs text-gray-500 mt-2">任意位置直接交互</p>
+                </div>
+                <div class="card">
+                    <h3 class="text-xl font-bold text-brand mb-3">可解释性</h3>
+                    <p class="text-sm text-gray-400">注意力<span class="text-brand font-bold text-lg mx-1">权重可视化</span></p>
+                    <p class="text-xs text-gray-500 mt-2">理解模型关注重点</p>
+                </div>
+            </div>
+            
+            <div class="mt-6 card text-center tech-gradient">
+                <p class="text-lg font-bold text-white mb-3">
+                    <i class="fas fa-lightbulb text-yellow-400 mr-2"></i>
+                    2017年Transformer架构提出，彻底改变AI模型训练方式
+                </p>
+                <button onclick="showModal('modal-attention')" class="px-6 py-2 bg-black text-brand font-bold rounded-lg hover:bg-gray-900 transition-all">
+                    <i class="fas fa-code mr-2"></i>查看注意力公式与应用
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 12: Model Deployment -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-rocket text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">大模型部署技术</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="mini-card text-center">
+                    <i class="fas fa-compress text-3xl text-brand mb-2"></i>
+                    <div class="text-xl font-bold text-white mb-1">量化</div>
+                    <div class="text-xs text-gray-400">FP32→INT8/INT4</div>
+                    <div class="text-xs text-gray-500 mt-1">Quantization</div>
+                </div>
+                <div class="mini-card text-center">
+                    <i class="fas fa-cut text-3xl text-brand mb-2"></i>
+                    <div class="text-xl font-bold text-white mb-1">剪枝</div>
+                    <div class="text-xs text-gray-400">移除冗余参数</div>
+                    <div class="text-xs text-gray-500 mt-1">Pruning</div>
+                </div>
+                <div class="mini-card text-center">
+                    <i class="fas fa-flask text-3xl text-brand mb-2"></i>
+                    <div class="text-xl font-bold text-white mb-1">蒸馏</div>
+                    <div class="text-xs text-gray-400">大模型→小模型</div>
+                    <div class="text-xs text-gray-500 mt-1">Distillation</div>
+                </div>
+                <div class="mini-card text-center">
+                    <i class="fas fa-tachometer-alt text-3xl text-brand mb-2"></i>
+                    <div class="text-xl font-bold text-white mb-1">加速</div>
+                    <div class="text-xs text-gray-400">推理优化</div>
+                    <div class="text-xs text-gray-500 mt-1">Acceleration</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-cloud text-3xl text-blue-400 mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">云端部署</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">算力资源</span>
+                            <span class="text-brand">✓ 丰富</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">可扩展性</span>
+                            <span class="text-brand">✓ 强</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">延迟</span>
+                            <span class="text-red-400">✗ 较高</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">隐私</span>
+                            <span class="text-red-400">✗ 风险</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-mobile-alt text-3xl text-brand mr-3"></i>
+                        <h3 class="text-2xl font-bold text-white">边缘部署</h3>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">延迟</span>
+                            <span class="text-brand">✓ 低</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">隐私</span>
+                            <span class="text-brand">✓ 保护</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">资源</span>
+                            <span class="text-red-400">✗ 受限</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-gray-400">成本</span>
+                            <span class="text-brand">✓ 低廉</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 card tech-gradient text-center">
+                <p class="text-lg font-bold text-white">
+                    <i class="fas fa-network-wired mr-2"></i>
+                    2025年趋势：云端-边缘协同部署，智能调度实现资源最优配置
+                </p>
+                <button onclick="showModal('modal-deployment')" class="mt-3 px-6 py-2 bg-black text-brand font-bold rounded-lg hover:bg-gray-900 transition-all">
+                    查看部署框架详情
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 13: Model Training -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-dumbbell text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">大模型训练技术</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-database text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">数据并行</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">Data Parallelism</p>
+                    <p class="text-sm text-gray-400">分片数据，相同模型</p>
+                    <div class="mt-3 mini-card bg-gray-900 text-xs text-gray-400">
+                        最常用策略，充分利用多GPU算力
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-layer-group text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">模型并行</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">Model Parallelism</p>
+                    <p class="text-sm text-gray-400">切分模型，不同GPU</p>
+                    <div class="mt-3 mini-card bg-gray-900 text-xs text-gray-400">
+                        用于超大模型，突破单卡内存限制
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-puzzle-piece text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">混合并行</h3>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">Hybrid Parallelism</p>
+                    <p class="text-sm text-gray-400">数据+模型结合</p>
+                    <div class="mt-3 mini-card bg-gray-900 text-xs text-gray-400">
+                        现代大模型训练的主流方案
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="text-2xl font-bold text-white mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-brand mr-3"></i>
+                    GPT-3训练案例
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="mini-card bg-gray-900 text-center">
+                        <div class="text-3xl font-bold text-brand mb-1">1750亿</div>
+                        <div class="text-xs text-gray-400">参数量</div>
+                    </div>
+                    <div class="mini-card bg-gray-900 text-center">
+                        <div class="text-3xl font-bold text-brand mb-1">96层</div>
+                        <div class="text-xs text-gray-400">网络深度</div>
+                    </div>
+                    <div class="mini-card bg-gray-900 text-center">
+                        <div class="text-3xl font-bold text-brand mb-1">45TB</div>
+                        <div class="text-xs text-gray-400">训练数据</div>
+                    </div>
+                    <div class="mini-card bg-gray-900 text-center">
+                        <div class="text-3xl font-bold text-brand mb-1">30天</div>
+                        <div class="text-xs text-gray-400">训练时间</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="showModal('modal-training')" class="px-6 py-3 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    <i class="fas fa-cogs mr-2"></i>查看优化算法详情
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 14: Knowledge Distillation -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-flask text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">知识蒸馏技术</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="card text-center">
+                    <i class="fas fa-chalkboard-teacher text-5xl text-blue-400 mb-4"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">老师模型</h3>
+                    <p class="text-sm text-gray-400">Teacher Model</p>
+                    <div class="mt-4 mini-card bg-gray-900">
+                        <div class="text-2xl font-bold text-blue-400 mb-1">175B参数</div>
+                        <div class="text-xs text-gray-400">大模型，性能强，资源需求高</div>
+                    </div>
+                </div>
+                
+                <div class="card text-center">
+                    <i class="fas fa-user-graduate text-5xl text-brand mb-4"></i>
+                    <h3 class="text-3xl font-bold text-white mb-2">学生模型</h3>
+                    <p class="text-sm text-gray-400">Student Model</p>
+                    <div class="mt-4 mini-card bg-gray-900">
+                        <div class="text-2xl font-bold text-brand mb-1">7B参数</div>
+                        <div class="text-xs text-gray-400">小模型，高效部署，保持性能</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3 class="text-2xl font-bold text-white mb-4 text-center">
+                    <i class="fas fa-arrow-right text-brand mr-2"></i>
+                    蒸馏效果
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="mini-card text-center">
+                        <div class="text-4xl font-bold text-brand mb-2">5-10倍</div>
+                        <div class="text-xs text-gray-400">模型压缩比</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <div class="text-4xl font-bold text-brand mb-2">90%+</div>
+                        <div class="text-xs text-gray-400">性能保持率</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <div class="text-4xl font-bold text-brand mb-2">95%+</div>
+                        <div class="text-xs text-gray-400">参数减少</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <i class="fas fa-bolt text-4xl text-brand mb-2"></i>
+                        <div class="text-xs text-gray-400">推理加速</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="mini-card">
+                    <div class="font-bold text-brand mb-1">动态蒸馏</div>
+                    <div class="text-xs text-gray-400">根据输入难度动态调整模型复杂度</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand mb-1">多老师蒸馏</div>
+                    <div class="text-xs text-gray-400">融合多个垂直领域大模型知识</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 15: Knowledge Base -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-book text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">知识库技术体系</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-white mb-4">
+                        <i class="fas fa-project-diagram text-brand mr-2"></i>
+                        知识图谱
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">三元组表示</div>
+                            <div class="text-xs text-gray-400">(主语, 谓语, 宾语)</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">实体与关系</div>
+                            <div class="text-xs text-gray-400">节点和边构成的图结构</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">知识推理</div>
+                            <div class="text-xs text-gray-400">基于图结构的逻辑推理</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3 class="text-2xl font-bold text-white mb-4">
+                        <i class="fas fa-search text-brand mr-2"></i>
+                        RAG技术
+                    </h3>
+                    <p class="text-xs text-gray-500 mb-3">Retrieval-Augmented Generation</p>
+                    <div class="space-y-3">
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">检索增强</div>
+                            <div class="text-xs text-gray-400">从知识库检索相关信息</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">上下文注入</div>
+                            <div class="text-xs text-gray-400">将检索信息提供给模型</div>
+                        </div>
+                        <div class="mini-card bg-gray-900">
+                            <div class="font-bold text-brand mb-1">生成回答</div>
+                            <div class="text-xs text-gray-400">基于知识生成准确答案</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card tech-gradient">
+                <h3 class="text-xl font-bold text-white mb-3 text-center">
+                    <i class="fas fa-star text-yellow-400 mr-2"></i>
+                    RAG优势
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="mini-card bg-black text-center">
+                        <i class="fas fa-check-circle text-brand text-2xl mb-1"></i>
+                        <div class="text-xs text-gray-300">提高准确性</div>
+                    </div>
+                    <div class="mini-card bg-black text-center">
+                        <i class="fas fa-clock text-brand text-2xl mb-1"></i>
+                        <div class="text-xs text-gray-300">处理最新知识</div>
+                    </div>
+                    <div class="mini-card bg-black text-center">
+                        <i class="fas fa-shield-alt text-brand text-2xl mb-1"></i>
+                        <div class="text-xs text-gray-300">减少幻觉问题</div>
+                    </div>
+                    <div class="mini-card bg-black text-center">
+                        <i class="fas fa-brain text-brand text-2xl mb-1"></i>
+                        <div class="text-xs text-gray-300">降低记忆负担</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 16: AI Agent -->
+    <div class="slide">
+        <div class="slide-content">
+            <div class="flex items-center mb-8">
+                <i class="fas fa-robot text-4xl text-brand mr-4"></i>
+                <h2 class="text-5xl font-bold text-brand">智能体开发技术</h2>
+            </div>
+            
+            <div class="card mb-6">
+                <h3 class="text-2xl font-bold text-white mb-4 text-center">智能体架构</h3>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="mini-card text-center">
+                        <i class="fas fa-brain text-3xl text-brand mb-2"></i>
+                        <div class="font-bold text-white">LLM核心</div>
+                        <div class="text-xs text-gray-400">大语言模型</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <i class="fas fa-toolbox text-3xl text-brand mb-2"></i>
+                        <div class="font-bold text-white">工具调用</div>
+                        <div class="text-xs text-gray-400">外部API</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <i class="fas fa-memory text-3xl text-brand mb-2"></i>
+                        <div class="font-bold text-white">记忆系统</div>
+                        <div class="text-xs text-gray-400">长短期记忆</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <i class="fas fa-route text-3xl text-brand mb-2"></i>
+                        <div class="font-bold text-white">规划系统</div>
+                        <div class="text-xs text-gray-400">行动计划</div>
+                    </div>
+                    <div class="mini-card text-center">
+                        <i class="fas fa-redo text-3xl text-brand mb-2"></i>
+                        <div class="font-bold text-white">反思机制</div>
+                        <div class="text-xs text-gray-400">策略调整</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-cog text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">工具调用</h3>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-400">
+                        <div>• 搜索引擎</div>
+                        <div>• 数据库查询</div>
+                        <div>• API接口</div>
+                        <div>• 文件操作</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-eye text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">多模态</h3>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-400">
+                        <div>• 视觉理解</div>
+                        <div>• 语音交互</div>
+                        <div>• 文本生成</div>
+                        <div>• 图像生成</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-database text-2xl text-brand mr-2"></i>
+                        <h3 class="text-xl font-bold text-white">记忆管理</h3>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-400">
+                        <div>• 短期记忆</div>
+                        <div>• 长期记忆</div>
+                        <div>• 检索机制</div>
+                        <div>• 记忆更新</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-center">
+                <button onclick="showModal('modal-agent')" class="px-6 py-3 bg-brand text-black font-bold rounded-lg hover:bg-opacity-80 transition-all">
+                    <i class="fas fa-code mr-2"></i>查看智能体应用案例
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 17: Summary -->
+    <div class="slide">
+        <div class="slide-content items-center text-center">
+            <div class="tech-gradient rounded-2xl p-8 mb-8">
+                <i class="fas fa-check-circle text-6xl text-white mb-6"></i>
+                <h2 class="text-5xl font-bold text-white mb-4">总结与展望</h2>
+                <p class="text-xl text-gray-300">AI Technology Summary & Outlook</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card">
+                    <i class="fas fa-microchip text-4xl text-brand mb-3"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">算力基础</h3>
+                    <p class="text-sm text-gray-400">英伟达GPU垄断地位短期难以撼动</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-brain text-4xl text-brand mb-3"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">技术演进</h3>
+                    <p class="text-sm text-gray-400">Transformer架构持续引领AI发展</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-rocket text-4xl text-brand mb-3"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">应用落地</h3>
+                    <p class="text-sm text-gray-400">从云端到边缘的全场景覆盖</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <p class="text-lg text-gray-300 leading-relaxed">
+                    <i class="fas fa-lightbulb text-brand mr-2"></i>
+                    AI技术正在深刻改变世界，理解其底层逻辑对于制定战略决策和推动技术创新至关重要。
+                    本报告涵盖了从算力基础设施到应用开发的完整技术栈，为体制内决策者和技术团队提供了全面的认知框架。
+                </p>
+            </div>
+            
+            <div class="mt-8">
+                <p class="text-2xl font-bold text-brand">感谢观看</p>
+                <p class="text-sm text-gray-500 mt-2">Thank you for watching</p>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- Modals -->
+
+<!-- Modal: Transformer Details -->
+<div id="modal-transformer" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-transformer')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">Transformer架构详解</h2>
+        <div class="space-y-4 text-gray-300">
+            <p class="leading-relaxed">
+                Transformer架构由Vaswani等人在2017年的论文《Attention Is All You Need》中提出，彻底改变了自然语言处理领域。
+            </p>
+            <h3 class="text-xl font-bold text-white">核心创新</h3>
+            <ul class="space-y-2 list-disc list-inside">
+                <li>完全基于注意力机制，摒弃了循环结构</li>
+                <li>实现了真正的并行化训练，速度提升10倍以上</li>
+                <li>更好地捕捉长距离依赖关系</li>
+                <li>为GPT、BERT等大模型奠定了基础</li>
+            </ul>
+            <h3 class="text-xl font-bold text-white mt-4">架构组成</h3>
+            <div class="grid grid-cols-2 gap-4 mt-3">
+                <div class="mini-card">
+                    <div class="font-bold text-brand">编码器(Encoder)</div>
+                    <div class="text-sm text-gray-400 mt-1">多层自注意力+前馈网络</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">解码器(Decoder)</div>
+                    <div class="text-sm text-gray-400 mt-1">掩码注意力+交叉注意力</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: CUDA Details -->
+<div id="modal-cuda" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-cuda')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">CUDA架构深度解析</h2>
+        <div class="space-y-4 text-gray-300">
+            <p class="leading-relaxed">
+                CUDA (Compute Unified Device Architecture) 是NVIDIA推出的并行计算平台和编程模型，让开发者能够使用熟悉的编程语言直接控制GPU进行通用计算。
+            </p>
+            <h3 class="text-xl font-bold text-white">核心优势</h3>
+            <div class="grid grid-cols-2 gap-3 mt-3">
+                <div class="mini-card">
+                    <div class="font-bold text-brand">易用性</div>
+                    <div class="text-sm text-gray-400">支持C/C++/Python等主流语言</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">生态丰富</div>
+                    <div class="text-sm text-gray-400">900+加速库和工具</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">性能强大</div>
+                    <div class="text-sm text-gray-400">比CPU快10-100倍</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">广泛支持</div>
+                    <div class="text-sm text-gray-400">所有主流AI框架优先支持</div>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mt-4">技术实现</h3>
+            <ul class="space-y-2 list-disc list-inside text-sm">
+                <li><strong>流式多处理器(SM)</strong>: 包含多个CUDA核心，每个SM是高度并行的处理单元</li>
+                <li><strong>线程层次结构</strong>: Grid-Block-Thread三级组织，32个线程为一组(Warp)</li>
+                <li><strong>内存层次</strong>: 全局内存、共享内存、寄存器等多级缓存</li>
+                <li><strong>隐藏延迟</strong>: 通过线程调度隐藏内存访问延迟，保持计算单元满负荷</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Product Comparison -->
+<div id="modal-products" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-products')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">GPU产品完整对比</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">英伟达 vs 竞争对手</h3>
+            <div class="space-y-3">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-brand">AMD Instinct MI325X</span>
+                        <span class="text-xs text-gray-500">预计2024 Q4上市</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-sm">
+                        <div>计算性能: H200的1.3倍</div>
+                        <div>内存容量: H200的2倍</div>
+                        <div>内存带宽: H200的1.3倍</div>
+                    </div>
+                    <div class="mt-2 text-xs text-red-400">
+                        ⚠️ 软件生态丰富度不足CUDA的1/5，实际性能折扣30%
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-brand">Intel Gaudi 3</span>
+                        <span class="text-xs text-gray-500">已发布</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-sm">
+                        <div>训练速度: 比H100快40%</div>
+                        <div>推理效能: 领先50%</div>
+                        <div>FP16性能: 领先1.85倍</div>
+                    </div>
+                    <div class="mt-2 text-xs text-red-400">
+                        ⚠️ 生态系统薄弱，迁移成本高
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-6">DGX B200系统规格</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="mini-card">
+                    <div class="text-brand font-bold">GPU配置</div>
+                    <div class="text-sm text-gray-400">8颗B200 GPU</div>
+                </div>
+                <div class="mini-card">
+                    <div class="text-brand font-bold">AI性能</div>
+                    <div class="text-sm text-gray-400">144 petaflops</div>
+                </div>
+                <div class="mini-card">
+                    <div class="text-brand font-bold">总显存</div>
+                    <div class="text-sm text-gray-400">1.4TB GPU显存</div>
+                </div>
+                <div class="mini-card">
+                    <div class="text-brand font-bold">显存带宽</div>
+                    <div class="text-sm text-gray-400">64TB/s总带宽</div>
+                </div>
+            </div>
+            <div class="mt-4 p-3 bg-gray-900 rounded-lg text-center">
+                <span class="text-brand font-bold">训练效能提升3倍 · 推理效能提升15倍</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: GPU Architecture -->
+<div id="modal-gpu-arch" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-gpu-arch')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">GPU并行计算原理</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">SIMD架构 (单指令多数据)</h3>
+            <p class="leading-relaxed text-sm">
+                GPU采用SIMD架构，多个计算单元同时执行相同指令但处理不同数据。这与CPU的复杂指令集形成鲜明对比，使GPU在处理大规模并行任务时效率极高。
+            </p>
+            
+            <h3 class="text-xl font-bold text-white mt-4">Ampere架构示例</h3>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="mini-card">
+                    <div class="font-bold text-brand">FP32核心</div>
+                    <div class="text-sm text-gray-400">每个SM包含64个</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">INT32核心</div>
+                    <div class="text-sm text-gray-400">每个SM包含64个</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">FP64核心</div>
+                    <div class="text-sm text-gray-400">每个SM包含32个</div>
+                </div>
+                <div class="mini-card">
+                    <div class="font-bold text-brand">Tensor Core</div>
+                    <div class="text-sm text-gray-400">每个SM包含4个</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">并行计算优势</h3>
+            <ul class="space-y-2 list-disc list-inside text-sm">
+                <li><strong>极高吞吐量</strong>: 同时处理大量数据，适合大规模并行任务</li>
+                <li><strong>强大计算密度</strong>: 通过大量计算单元实现惊人的峰值算力</li>
+                <li><strong>优秀能效比</strong>: 处理并行任务时，单位功耗下的计算能力远超CPU</li>
+            </ul>
+            
+            <h3 class="text-xl font-bold text-white mt-4">HBM内存技术</h3>
+            <p class="text-sm leading-relaxed">
+                HBM (高带宽内存) 采用3D堆叠架构和TSV (硅通孔) 技术，通过垂直堆叠多层DRAM芯片大幅缩短数据传输路径。
+                最新的HBM3e传输速率达8Gbps，最高每秒可处理1.15-1.225TB数据。
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: ML Details -->
+<div id="modal-ml-details" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-ml-details')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">机器学习算法详解</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">监督学习常见算法</h3>
+            <div class="space-y-2 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">线性回归 (Linear Regression)</div>
+                    <div class="text-gray-400">通过拟合线性方程预测连续值</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">支持向量机 (SVM)</div>
+                    <div class="text-gray-400">寻找最优超平面进行分类</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">随机森林 (Random Forest)</div>
+                    <div class="text-gray-400">集成多个决策树提高准确率</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">神经网络 (Neural Network)</div>
+                    <div class="text-gray-400">多层感知器，深度学习基础</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">无监督学习常见算法</h3>
+            <div class="space-y-2 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">K-Means聚类</div>
+                    <div class="text-gray-400">将数据划分为K个簇，最小化簇内距离</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">主成分分析 (PCA)</div>
+                    <div class="text-gray-400">线性降维，保留主要信息</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">自编码器 (Autoencoder)</div>
+                    <div class="text-gray-400">神经网络实现特征学习和降维</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">强化学习常见算法</h3>
+            <div class="space-y-2 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">Q-Learning</div>
+                    <div class="text-gray-400">基于值函数的强化学习算法</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">深度Q网络 (DQN)</div>
+                    <div class="text-gray-400">结合深度学习和Q-Learning</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">策略梯度 (Policy Gradient)</div>
+                    <div class="text-gray-400">直接优化策略函数</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Deep Learning Math -->
+<div id="modal-dl-math" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-dl-math')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">深度学习数学原理</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">损失函数</h3>
+            <div class="space-y-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand mb-2">均方误差 (MSE) - 回归任务</div>
+                    <div class="bg-gray-900 p-3 rounded text-gray-300 font-mono text-xs">
+                        MSE = (1/n) Σ(y_i - ŷ_i)²
+                    </div>
+                    <div class="mt-2 text-gray-400">简单直观，但对异常值敏感</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand mb-2">交叉熵损失 (Cross-Entropy) - 分类任务</div>
+                    <div class="bg-gray-900 p-3 rounded text-gray-300 font-mono text-xs">
+                        Binary: L = -[y·log(ŷ) + (1-y)·log(1-ŷ)]<br>
+                        Multi: L = -Σ y_i·log(ŷ_i)
+                    </div>
+                    <div class="mt-2 text-gray-400">与softmax配合时高效，解决梯度消失</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">优化算法</h3>
+            <div class="space-y-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand mb-2">梯度下降 (Gradient Descent)</div>
+                    <div class="bg-gray-900 p-3 rounded text-gray-300 font-mono text-xs">
+                        θ_(t+1) = θ_t - η·∇J(θ_t)
+                    </div>
+                    <div class="mt-2 text-gray-400">η是学习率，∇J是损失函数梯度</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand mb-2">Adam优化器</div>
+                    <div class="text-gray-400">结合动量法和RMSprop，自适应学习率，目前最常用</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">正则化技术</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">L2正则化</div>
+                    <div class="text-gray-400 text-xs">L = L_loss + λΣw²</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Dropout</div>
+                    <div class="text-gray-400 text-xs">随机失活神经元</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Early Stopping</div>
+                    <div class="text-gray-400 text-xs">验证集不再改善时停止</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Data Augmentation</div>
+                    <div class="text-gray-400 text-xs">数据增强</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Attention Mechanism -->
+<div id="modal-attention" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-attention')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">自注意力机制详解</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">核心公式</h3>
+            <div class="card">
+                <div class="bg-gray-900 p-4 rounded text-center font-mono text-sm">
+                    Attention(Q, K, V) = softmax(QK<sup>T</sup>/√d<sub>k</sub>) · V
+                </div>
+                <div class="mt-3 text-sm text-gray-400">
+                    <p>• Q: Query (查询矩阵)</p>
+                    <p>• K: Key (键矩阵)</p>
+                    <p>• V: Value (值矩阵)</p>
+                    <p>• d_k: 键向量维度 (缩放因子，防止梯度消失)</p>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">多头注意力机制</h3>
+            <div class="text-sm leading-relaxed">
+                <p class="mb-3">
+                    多头机制将Q、K、V通过不同的线性变换投影h次，并行执行h次注意力计算，然后拼接结果。
+                </p>
+                <div class="card">
+                    <div class="font-bold text-brand mb-2">优势：</div>
+                    <ul class="space-y-1 text-gray-400">
+                        <li>• 扩展模型关注不同位置的能力</li>
+                        <li>• 不同头学习不同类型的依赖关系（句法、语义等）</li>
+                        <li>• 增强表示能力和鲁棒性</li>
+                        <li>• 提供多个"表示子空间"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">实际应用</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">BERT</div>
+                    <div class="text-gray-400">双向编码器，理解上下文</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">GPT</div>
+                    <div class="text-gray-400">单向解码器，文本生成</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Vision Transformer</div>
+                    <div class="text-gray-400">图像识别，ViT模型</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">多模态模型</div>
+                    <div class="text-gray-400">文本+图像融合</div>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-gray-900 rounded text-center text-sm">
+                <span class="text-brand font-bold">
+                    相比RNN/LSTM，Transformer训练速度快10倍+，更好地捕捉长距离依赖
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Deployment -->
+<div id="modal-deployment" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-deployment')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">部署框架与工具</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">主流部署框架</h3>
+            <div class="space-y-3 text-sm">
+                <div class="card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-brand text-lg">TensorRT</span>
+                        <span class="text-xs text-gray-500">NVIDIA</span>
+                    </div>
+                    <div class="space-y-1 text-gray-400">
+                        <p>• 高性能推理优化器，针对NVIDIA GPU优化</p>
+                        <p>• 支持FP32/FP16/INT8多种精度</p>
+                        <p>• 自动图优化：常量折叠、层融合</p>
+                        <p>• 支持动态批处理和流处理</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-brand text-lg">ONNX Runtime</span>
+                        <span class="text-xs text-gray-500">Microsoft</span>
+                    </div>
+                    <div class="space-y-1 text-gray-400">
+                        <p>• 跨平台支持 (Windows/Linux/macOS)</p>
+                        <p>• 支持多种硬件加速器 (CPU/GPU/FPGA)</p>
+                        <p>• 统一API接口，简化部署流程</p>
+                        <p>• 支持动态形状和批处理</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-bold text-brand text-lg">OpenVINO</span>
+                        <span class="text-xs text-gray-500">Intel</span>
+                    </div>
+                    <div class="space-y-1 text-gray-400">
+                        <p>• 针对Intel硬件优化 (CPU/GPU/VPU)</p>
+                        <p>• 模型优化器和推理引擎</p>
+                        <p>• 转换为中间表示(IR)格式</p>
+                        <p>• 边缘设备部署友好</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">最新推理优化技术</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">Self-Speculative Decoding</div>
+                    <div class="text-gray-400 text-xs">模型较浅层充当草稿</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Medusa</div>
+                    <div class="text-gray-400 text-xs">多解码头并行推理</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Blockwise Parallel</div>
+                    <div class="text-gray-400 text-xs">分块并行解码</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">Dynamic Batching</div>
+                    <div class="text-gray-400 text-xs">动态批处理优化</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Training -->
+<div id="modal-training" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-training')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">训练优化算法</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">优化算法对比</h3>
+            <div class="space-y-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">AdamW</div>
+                    <div class="text-gray-400">
+                        Adam的改进版本，将权重衰减直接应用于权重而非损失函数。目前大模型训练的主流选择，
+                        结合了动量法和自适应学习率的优点。
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">AdaFactor</div>
+                    <div class="text-gray-400">
+                        自适应学习率算法，内存效率高。通过因子分解减少优化器状态的内存占用，
+                        特别适合超大规模模型训练。
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">LAMB</div>
+                    <div class="text-gray-400">
+                        Layer-wise Adaptive Moments优化器，结合了逐层自适应和动量。
+                        适用于大批量训练，能加速收敛。
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">学习率调度策略</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">余弦退火</div>
+                    <div class="text-gray-400 text-xs">按余弦函数规律衰减</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">线性热身</div>
+                    <div class="text-gray-400 text-xs">训练初期逐渐增加学习率</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">阶梯衰减</div>
+                    <div class="text-gray-400 text-xs">特定epoch后降低学习率</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">自适应调整</div>
+                    <div class="text-gray-400 text-xs">根据验证性能自动调整</div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">训练技巧</h3>
+            <div class="space-y-2 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">混合精度训练</div>
+                    <div class="text-gray-400">使用FP16和FP32混合计算，提速同时保持精度</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">梯度累积</div>
+                    <div class="text-gray-400">累积多个小批次梯度，实现更大的有效批大小</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">梯度裁剪</div>
+                    <div class="text-gray-400">防止梯度爆炸，限制梯度的最大范数</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: AI Agent -->
+<div id="modal-agent" class="modal">
+    <div class="modal-content">
+        <div class="modal-close" onclick="closeModal('modal-agent')">
+            <i class="fas fa-times"></i>
+        </div>
+        <h2 class="text-3xl font-bold text-brand mb-4">智能体应用案例</h2>
+        <div class="space-y-4 text-gray-300">
+            <h3 class="text-xl font-bold text-white">典型应用场景</h3>
+            <div class="space-y-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">
+                        <i class="fas fa-code mr-2"></i>代码助手
+                    </div>
+                    <div class="text-gray-400">
+                        基于GPT-4的代码生成和调试助手，能够理解需求、编写代码、运行测试、修复bug。
+                        集成IDE工具，访问文档和代码库，提供上下文感知的建议。
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        案例：GitHub Copilot, Cursor AI
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">
+                        <i class="fas fa-robot mr-2"></i>自动化办公助手
+                    </div>
+                    <div class="text-gray-400">
+                        处理邮件、日程安排、文档整理、数据分析等任务。能够调用日历API、邮件服务、
+                        办公软件API，根据用户习惯自动完成重复性工作。
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        案例：Microsoft 365 Copilot, Notion AI
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">
+                        <i class="fas fa-search mr-2"></i>研究助手
+                    </div>
+                    <div class="text-gray-400">
+                        自动搜索学术论文、提取关键信息、生成文献综述。能够访问学术数据库、
+                        理解复杂概念、发现研究趋势，协助撰写研究报告。
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        案例：Elicit, Consensus, Perplexity
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="font-bold text-brand text-lg mb-2">
+                        <i class="fas fa-headset mr-2"></i>客户服务智能体
+                    </div>
+                    <div class="text-gray-400">
+                        24/7在线客服，理解客户问题、查询订单信息、处理退换货、升级到人工客服。
+                        能够访问CRM系统、订单数据库、知识库，提供个性化服务。
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">
+                        案例：各大电商平台的AI客服系统
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="text-xl font-bold text-white mt-4">智能体开发框架</h3>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="card">
+                    <div class="font-bold text-brand">LangChain</div>
+                    <div class="text-gray-400 text-xs">最流行的LLM应用开发框架</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">AutoGPT</div>
+                    <div class="text-gray-400 text-xs">自主AI智能体框架</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">BabyAGI</div>
+                    <div class="text-gray-400 text-xs">任务驱动的自主AI系统</div>
+                </div>
+                <div class="card">
+                    <div class="font-bold text-brand">AgentGPT</div>
+                    <div class="text-gray-400 text-xs">浏览器中的自主AI智能体</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Modal control functions
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+    
+    // Close modal when clicking outside content
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this.id);
+            }
+        });
+    });
+    
+    // ESC key to close modals
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal.active').forEach(modal => {
+                closeModal(modal.id);
+            });
+        }
+    });
+    
+    // Chart: China Market Change
+    window.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('chinaMarketChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['2024年初', '2025年Q3'],
+                    datasets: [
+                        {
+                            label: '英伟达',
+                            data: [83.2, 5],
+                            backgroundColor: 'rgba(118, 185, 0, 0.8)',
+                            borderColor: '#76B900',
+                            borderWidth: 2
+                        },
+                        {
+                            label: '华为',
+                            data: [14.6, 60],
+                            backgroundColor: 'rgba(255, 0, 0, 0.6)',
+                            borderColor: '#FF0000',
+                            borderWidth: 2
+                        },
+                        {
+                            label: '其他',
+                            data: [2.2, 35],
+                            backgroundColor: 'rgba(100, 100, 100, 0.6)',
+                            borderColor: '#666',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: '中国AI芯片市场份额变化 (%)',
+                            color: '#76B900',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                color: '#999',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            grid: {
+                                color: '#333'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#999'
+                            },
+                            grid: {
+                                color: '#333'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
